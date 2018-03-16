@@ -1,0 +1,28 @@
+{
+  "name": "dlwr.tagbot",
+  "version": "1.0.0",
+  "description": "TagBot",
+  "main": "app.js",
+  "scripts": {
+    "start": "tsc && node ./build/app.js"
+  },
+  "author": "Bert Goens",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/BertGoens/TagBot-POC"
+  },
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bluebird": "^3.4.7",
+    "botbuilder": "^3.13.1",
+    "dotenv-safe": "^5.0.1",
+    "restify": "^4.3.0"
+  },
+  "devDependencies": {
+    "@types/bluebird": "^3.5.20",
+    "@types/dotenv-safe": "^4.0.1",
+    "@types/node": "^9.4.7",
+    "@types/restify": "^5.0.7"
+  }
+}
