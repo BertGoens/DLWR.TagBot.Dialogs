@@ -1,11 +1,17 @@
+// @ts-ignore
 import axios, { AxiosRequestConfig, AxiosPromise } from "axios";
 
-const storeUrl =
-  process.env.ENV == "TEST"
-    ? process.env.settings_store ||
-      process.env.SETTINGS_STORE ||
-      "http://localhost:4000/api/settings"
-    : "http://localhost:4000/api/settings";
+var storeUrl = "";
+if (
+  process.env.NODE_ENV == "PRODUCTION" ||
+  process.env.NODE_ENV == "production"
+) {
+  storeUrl = process.env.SETTINGS_STORE;
+} else {
+  storeUrl =
+    process.env.SETTINGS_LOCAL_STORE || "http://localhost:4000/api/settings";
+}
+
 console.log("Settings-store Url: " + storeUrl);
 const store = axios.create({
   baseURL: storeUrl

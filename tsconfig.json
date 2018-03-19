@@ -5,7 +5,8 @@
 
     "sourceMap": true,
     "rootDir": "src",
-    "outDir": "build"
+    "outDir": "build",
+    "noUnusedLocals": true
   },
   "exclude": ["node_modules", "**/*.spec.ts"]
 }

@@ -1,6 +1,6 @@
 // This loads the environment variables from the .env file
-require('dotenv-safe').config({
-   allowEmptyValues: true
+require("dotenv-safe").config({
+  allowEmptyValues: true
 });
 
 import * as builder from "botbuilder";
@@ -17,7 +17,7 @@ server.listen(port, addr, function() {
 });
 
 server.get("/", (req, res, next) => {
-  res.send("hello");
+  res.send("hello @" + addr + ":" + port);
   next();
 });
 

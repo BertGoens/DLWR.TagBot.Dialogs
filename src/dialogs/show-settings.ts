@@ -1,5 +1,4 @@
 import * as builder from "botbuilder";
-import * as db from "../stores";
 import { SettingsStore } from "../stores";
 
 export const ShowSettingsLuisName = "Bot.ShowSettings";
