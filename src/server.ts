@@ -60,17 +60,13 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
     session.send("Ok then.");
   })
   .matches(dialogs.ShowSettingsLuisName, dialogs.ShowSettingsDialog)
-  .matches("Bot.EnableSetting", session => {})
-  .matches("Bot.DisableSetting", session => {})
+  .matches(dialogs.IgnoreUserLuisName, dialogs.IgnoreUserDialog)
+  .matches(dialogs.UnignoreUserLuisName, dialogs.UnignoreUserialog)
   .matches(dialogs.HelpDialogLuisName, dialogs.HelpDialog)
   .matches("Utilities.Stop", session => {
     session.endDialog();
   })
-  .matches("None", session => {
-    session.send(
-      "Hi... I'm a TagBot. I can find and show you untagged documents on SharePoint, suggest tags and add your tags for you."
-    );
-  })
+  .matches(dialogs.NoneLuisName, dialogs.NoneDialog)
   .onDefault(session => {
     session.send(
       "Sorry, I did not understand that, type 'help' to see what I can do.",
@@ -85,7 +81,7 @@ bot.on("contactRelationUpdate", function(message) {
     var name = message.user ? message.user.name : null;
     var reply = new builder.Message()
       .address(message.address)
-      .text("Hello %s... Thanks for adding me.", name || "there");
+      .text("Hello %s. Thanks for adding me.", name || "there");
     bot.send(reply);
   }
 });
