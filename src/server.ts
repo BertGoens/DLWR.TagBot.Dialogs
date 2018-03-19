@@ -3,6 +3,7 @@ require("dotenv-safe").config({
   allowEmptyValues: true
 });
 
+import { join } from "path";
 import * as builder from "botbuilder";
 import * as restify from "restify";
 
@@ -16,7 +17,17 @@ server.listen(port, addr, function() {
   console.log("%s listening to %s", server.name, server.url);
 });
 
-server.get("/", (req, res, next) => {
+const assetPath = join(__dirname, "..", "static");
+console.log(assetPath);
+server.get(
+  "/",
+  restify.plugins.serveStatic({
+    directory: assetPath,
+    default: "/index.html"
+  })
+);
+
+server.get("/help", (req, res, next) => {
   res.send("hello @" + addr + ":" + port);
   next();
 });

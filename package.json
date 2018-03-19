@@ -2,9 +2,9 @@
   "name": "dlwr.tagbot",
   "version": "1.0.0",
   "description": "TagBot",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node ./build/app.js",
+    "start": "node ./build/server.js",
     "compile": "tsc"
   },
   "author": "Bert Goens",
