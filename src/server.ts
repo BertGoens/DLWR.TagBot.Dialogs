@@ -9,7 +9,6 @@ const argv = require("minimist")(process.argv.slice(2));
 import { join } from "path";
 import * as builder from "botbuilder";
 import * as restify from "restify";
-
 import * as dialogs from "./dialogs";
 
 // Setup Restify Server
