@@ -51,11 +51,7 @@ var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
 bot.dialog("TagDocument", dialogs.LoopDialog);
 
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
-
-  .matches("Utilities.Greeting", session => {
-    var message = new builder.Message().text("Hi, let's tag some documents!");
-    session.send(message);
-  })
+  .matches(dialogs.GreetingLuisName, dialogs.GreetingDialog)
   .matches(dialogs.SharePointSearchLuisName, dialogs.SharePointSearchDialog)
   .matches("Utilities.Confirm", session => {
     session.send("Ok then.");
