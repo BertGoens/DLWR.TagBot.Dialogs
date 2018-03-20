@@ -3,7 +3,8 @@ require("dotenv-safe").config({
   allowEmptyValues: true
 });
 
-console.log("Node version: " + process.version);
+// command line arguments (overrule .env file)
+const argv = require("minimist")(process.argv.slice(2));
 
 import { join } from "path";
 import * as builder from "botbuilder";
@@ -13,8 +14,8 @@ import * as dialogs from "./dialogs";
 
 // Setup Restify Server
 var server = restify.createServer();
-const port = process.env.port || process.env.PORT || 3950;
-const addr = process.env.addr || process.env.ADDR || "127.0.0.1";
+const port = argv.port || process.env.port || process.env.PORT || 3950;
+const addr = argv.addr || process.env.addr || process.env.ADDR || "127.0.0.1";
 server.listen(port, addr, function() {
   console.log("%s listening to %s", server.name, server.url);
 });
