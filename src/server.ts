@@ -51,7 +51,7 @@ var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
 bot.dialog("TagDocument", dialogs.LoopDialog);
 
 var intents = new builder.IntentDialog({ recognizers: [recognizer] })
-  /* , , , ,Utilities.Stop */
+
   .matches("Utilities.Greeting", session => {
     var message = new builder.Message().text("Hi, let's tag some documents!");
     session.send(message);

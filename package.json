@@ -4,7 +4,7 @@
   "description": "TagBot",
   "main": "server.js",
   "scripts": {
-    "start": "node ./build/server.js",
+    "start": "node app.js",
     "compile": "tsc"
   },
   "author": "Bert Goens",
