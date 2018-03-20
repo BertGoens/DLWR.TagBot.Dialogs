@@ -26,38 +26,42 @@ export interface ISettings {
 const GetSettingsById = async (
   id: string,
   channel?: string
-): Promise<ISettings> => {
+): Promise<{ error: any; data: ISettings }> => {
   try {
     const response = await store.get(`/?id=${id}`);
     const data: ISettings = response.data;
-    return data;
+    return { error: null, data: data };
   } catch (error) {
     console.error(error);
+    return { error: error, data: null };
   }
 };
 
 const SaveSettingsById = async (
   id: string,
   settings: ISettings
-): Promise<boolean> => {
+): Promise<{ error: any; result: boolean }> => {
   try {
     var result = await store.put(`/?id=${id}`, settings);
     console.log(result);
-    return true;
+    return { error: null, result: true };
   } catch (error) {
     console.error(error);
-    return false;
+    return { error: error, result: null };
   }
 };
 
-const CreateSettings = (id: string, settings: ISettings): boolean => {
+const CreateSettings = (
+  id: string,
+  settings: ISettings
+): { error: any; result: boolean } => {
   try {
     var result = store.post("/", settings);
     console.log(result);
-    return true;
+    return { error: null, result: true };
   } catch (error) {
     console.error(error);
-    return false;
+    return { error: error, result: null };
   }
 };
 

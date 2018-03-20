@@ -1,5 +1,5 @@
 import * as builder from "botbuilder";
-import { findDocuments, IDocument } from "../stores";
+import { findDocuments } from "../stores";
 
 export const SharePointSearchLuisName = "SharePoint.Search";
 export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
@@ -9,7 +9,7 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
     );
     session.send(message);
 
-    var documents = findDocuments(session.message.user.name);
+    var documents = findDocuments(session.message.user.id);
 
     // try extracting entities
     var numberEntity = builder.EntityRecognizer.findEntity(
@@ -56,6 +56,7 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
     } else {
       // End
       session.endDialog(new builder.Message().text("Done tagging for today"));
+      return;
     }
 
     session.userData.documentsTagged = 0;

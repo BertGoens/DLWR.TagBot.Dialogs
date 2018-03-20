@@ -7,18 +7,20 @@ export const UnignoreUserialog: builder.IDialogWaterfallStep[] = [
     var message = new builder.Message();
     message.text("I'll send you again if there are any missing tags");
 
-    const userId = session.message.user.name;
+    const userId = session.message.user.id;
     const channel = session.message.source;
-    const settings: ISettings = await SettingsStore.GetSettingsById(
-      userId,
-      channel
-    );
-    const newSettings: ISettings = {
-      botMutedUntill: null,
-      channelId: settings.channelId,
-      userId: settings.userId
-    };
+    const result = await SettingsStore.GetSettingsById(userId, channel);
+    if (result.error) {
+      session.send("Something went wrong, please try again later.");
+    } else {
+      const newSettings: ISettings = {
+        botMutedUntill: null,
+        channelId: result.data.channelId,
+        userId: result.data.userId
+      };
 
-    await SettingsStore.SaveSettingsById(userId, newSettings);
+      await SettingsStore.SaveSettingsById(userId, newSettings);
+      session.send(message);
+    }
   }
 ];

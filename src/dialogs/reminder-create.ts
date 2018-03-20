@@ -2,7 +2,7 @@ import * as builder from "botbuilder";
 import * as datefns from "date-fns";
 import * as schedule from "node-schedule";
 
-import { SettingsStore } from "../stores";
+//import { SettingsStore } from "../stores";
 
 const sendReminder = () => {
   // send reminder to user
@@ -14,7 +14,7 @@ export const ReminderCreateDialog: builder.IDialogWaterfallStep[] = [
     var muteUntillDate: Date = builder.EntityRecognizer.resolveTime(
       args.entities
     );
-    var job = schedule.scheduleJob(muteUntillDate, sendReminder);
+    schedule.scheduleJob(muteUntillDate, sendReminder);
 
     var text = "I'll remind you ";
     if (datefns.isToday(muteUntillDate)) {
