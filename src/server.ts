@@ -3,6 +3,8 @@ require("dotenv-safe").config({
   allowEmptyValues: true
 });
 
+console.log("Node version: " + process.version);
+
 import { join } from "path";
 import * as builder from "botbuilder";
 import * as restify from "restify";
