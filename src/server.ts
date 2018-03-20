@@ -18,7 +18,6 @@ server.listen(port, addr, function() {
 });
 
 const assetPath = join(__dirname, "..", "static");
-console.log(assetPath);
 server.get(
   "/",
   restify.plugins.serveStatic({
@@ -66,13 +65,9 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
   .matches("Utilities.Stop", session => {
     session.endDialog();
   })
+  .matches(dialogs.ReminderCreateLuisName, dialogs.ReminderCreateDialog)
   .matches(dialogs.NoneLuisName, dialogs.NoneDialog)
-  .onDefault(session => {
-    session.send(
-      "Sorry, I did not understand that, type 'help' to see what I can do.",
-      session.message.text
-    );
-  });
+  .onDefault(dialogs.onDefault);
 
 bot.dialog("/", intents);
 
