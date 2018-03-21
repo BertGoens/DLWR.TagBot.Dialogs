@@ -1,5 +1,6 @@
 // @ts-ignore
 import axios, { AxiosRequestConfig, AxiosPromise } from "axios";
+import { info, error, debug } from "../util";
 
 var storeUrl = "";
 if (
@@ -12,7 +13,7 @@ if (
     process.env.SETTINGS_LOCAL_STORE || "http://localhost:4000/api/settings";
 }
 
-console.log("Settings-store Url: " + storeUrl);
+info("Settings-store Url: " + storeUrl);
 const store = axios.create({
   baseURL: storeUrl
 });
@@ -28,12 +29,15 @@ const GetSettingsById = async (
   channel?: string
 ): Promise<{ error: any; data: ISettings }> => {
   try {
-    const response = await store.get(`/?id=${id}`);
+    const params = `/?id=${id}`;
+    const url = store.defaults.baseURL + params;
+    debug("GET ", url);
+    const response = await store.get(params);
     const data: ISettings = response.data;
     return { error: null, data: data };
-  } catch (error) {
-    console.error(error);
-    return { error: error, data: null };
+  } catch (err) {
+    error(err);
+    return { error: err, data: null };
   }
 };
 
@@ -42,24 +46,30 @@ const SaveSettingsById = async (
   settings: ISettings
 ): Promise<{ error: any; result: boolean }> => {
   try {
-    var result = await store.put(`/?id=${id}`, settings);
+    const params = `/?id=${id}`;
+    const url = store.defaults.baseURL + params;
+    debug("PUT ", url);
+    var result = await store.put(params, settings);
     return { error: null, result: true };
-  } catch (error) {
-    console.error(error);
-    return { error: error, result: null };
+  } catch (err) {
+    error(err);
+    return { error: err, result: null };
   }
 };
 
-const CreateSettings = (
+const CreateSettings = async (
   id: string,
   settings: ISettings
-): { error: any; result: boolean } => {
+): Promise<{ error: any; result: boolean }> => {
   try {
-    var result = store.post("/", settings);
+    const params = "/";
+    const url = store.defaults.baseURL + params;
+    debug("POST ", url);
+    var result = await store.post(params, settings);
     return { error: null, result: true };
-  } catch (error) {
-    console.error(error);
-    return { error: error, result: null };
+  } catch (err) {
+    error(err);
+    return { error: err, result: null };
   }
 };
 

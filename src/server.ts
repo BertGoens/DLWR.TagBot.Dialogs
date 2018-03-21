@@ -10,13 +10,19 @@ import { join } from "path";
 import * as builder from "botbuilder";
 import * as restify from "restify";
 import * as dialogs from "./dialogs";
+import * as fs from "fs";
+import { info } from "./util";
+
+// log important stuff
+info("Node version: " + process.version);
+info("NODE_ENV=", process.env.NODE_ENV);
 
 // Setup Restify Server
 var server = restify.createServer();
 const port = argv.port || process.env.port || process.env.PORT || 3950;
 const addr = argv.addr || process.env.addr || process.env.ADDR || "127.0.0.1";
 server.listen(port, addr, function() {
-  console.log("%s listening to %s", server.name, server.url);
+  info("%s listening to %s", server.name, server.url);
 });
 
 const assetPath = join(__dirname, "..", "static");
@@ -27,6 +33,22 @@ server.get(
     default: "/index.html"
   })
 );
+
+server.get("/favicon.png", (req, res, next) => {
+  const faviconPath = join(assetPath, "favicon.png");
+  fs.readFile(faviconPath, function(err, file) {
+    if (err) {
+      res.send(500);
+      return next();
+    }
+
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "image/png");
+    res.write(file);
+    res.end();
+    return next();
+  });
+});
 
 server.get("/help", (req, res, next) => {
   res.send("hello @" + addr + ":" + port);
