@@ -10,7 +10,7 @@ export const findDocuments = (author: string) => {
   var untaggedDocuments: IDocument[] = [];
   for (var i = 1; i <= 3; i++) {
     const docNr = Math.ceil(Math.random() * documents.length);
-    console.log(docNr);
+
     const takeDocument = documents[docNr];
 
     const doc: IDocument = {

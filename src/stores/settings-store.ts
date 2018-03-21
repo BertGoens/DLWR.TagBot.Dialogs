@@ -43,7 +43,6 @@ const SaveSettingsById = async (
 ): Promise<{ error: any; result: boolean }> => {
   try {
     var result = await store.put(`/?id=${id}`, settings);
-    console.log(result);
     return { error: null, result: true };
   } catch (error) {
     console.error(error);
@@ -57,7 +56,6 @@ const CreateSettings = (
 ): { error: any; result: boolean } => {
   try {
     var result = store.post("/", settings);
-    console.log(result);
     return { error: null, result: true };
   } catch (error) {
     console.error(error);
