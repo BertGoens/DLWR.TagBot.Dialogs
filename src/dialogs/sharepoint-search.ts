@@ -53,14 +53,14 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
         var cutExcessNumber = docs.length - numberToTag;
         session.userData.documents.splice(0, cutExcessNumber);
       }
+
+      session.userData.documentsTagged = 0;
+      session.userData.documentsToTag = numberToTag;
+      session.replaceDialog("TagDocument");
     } else {
       // End
       session.endDialog(new builder.Message().text("Done tagging for today"));
       return;
     }
-
-    session.userData.documentsTagged = 0;
-    session.userData.documentsToTag = numberToTag;
-    session.replaceDialog("TagDocument");
   }
 ];
