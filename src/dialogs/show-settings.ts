@@ -9,9 +9,13 @@ export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
 
     var userSettings = await SettingsStore.GetSettingsById(userId, channelId);
     var reply = new builder.Message();
-    var text = "Your settings are:  \n" + JSON.stringify(userSettings);
+    if (userSettings.error) {
+      reply.text("Something went wrong, please try again later.");
+    } else {
+      var text = "Your settings are:  \n" + JSON.stringify(userSettings.data);
+      reply.text(text);
+    }
 
-    reply.text(text);
     session.send(reply);
   }
 ];

@@ -6,11 +6,6 @@ export const IgnoreUserLuisName = "IgnoreUser";
 export const IgnoreUserDialog: builder.IDialogWaterfallStep[] = [
   async function sendIgnoreMessage(session, args, next) {
     // try extracting entities
-    var muteForDays = builder.EntityRecognizer.findEntity(
-      args.entities,
-      "builtin.number"
-    );
-
     var muteUntillDate = builder.EntityRecognizer.resolveTime(args.entities);
 
     // fallback: mute for 1 day
@@ -20,8 +15,6 @@ export const IgnoreUserDialog: builder.IDialogWaterfallStep[] = [
 
     if (muteUntillDate) {
       ignoreUntill = muteUntillDate;
-    } else if (muteForDays && muteForDays.entity > 0) {
-      ignoreUntill = datefns.addDays(new Date(), 1);
     } else {
       ignoreUntill = tomorrow;
     }
@@ -29,7 +22,7 @@ export const IgnoreUserDialog: builder.IDialogWaterfallStep[] = [
     var message = new builder.Message();
     message.text(
       "I won't contact you untill at least " +
-        datefns.format(ignoreUntill, "DD/MM")
+        datefns.format(ignoreUntill, "DD/MM/yyyy")
     );
 
     const userId = session.message.user.id;

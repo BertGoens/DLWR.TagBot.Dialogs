@@ -1,5 +1,4 @@
-// @ts-ignore
-import axios, { AxiosRequestConfig, AxiosPromise } from "axios";
+import axios from "axios";
 import { info, error, debug } from "../util";
 
 var storeUrl = "";
