@@ -7,9 +7,10 @@ if (
   process.env.NODE_ENV == "production"
 ) {
   storeUrl = process.env.SETTINGS_STORE;
+} else if (process.env.SETTINGS_LOCAL_STORE) {
+  storeUrl = process.env.SETTINGS_LOCAL_STORE;
 } else {
-  storeUrl =
-    process.env.SETTINGS_LOCAL_STORE || "http://localhost:4000/api/settings";
+  storeUrl = process.env.SETTINGS_STORE;
 }
 
 info("Settings-store Url: " + storeUrl);
