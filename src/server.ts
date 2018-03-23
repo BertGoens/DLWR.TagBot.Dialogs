@@ -21,8 +21,13 @@ info("NODE_ENV=", process.env.NODE_ENV);
 var server = restify.createServer();
 const port = argv.port || process.env.port || process.env.PORT || 3950;
 const addr = argv.addr || process.env.addr || process.env.ADDR || "127.0.0.1";
+
+// Controllers
+const apiMessageController = "/api/messages";
+
 server.listen(port, addr, function() {
   info("%s listening to %s", server.name, server.url);
+  info("Messages Controller: " + server.url + apiMessageController);
 });
 
 const assetPath = join(__dirname, "..", "static");
@@ -62,7 +67,7 @@ var connector = new builder.ChatConnector({
 });
 
 // Listen for messages from users
-server.post("/api/messages", connector.listen());
+server.post(apiMessageController, connector.listen());
 
 var bot = new builder.UniversalBot(connector);
 bot.set("storage", new builder.MemoryBotStorage());
