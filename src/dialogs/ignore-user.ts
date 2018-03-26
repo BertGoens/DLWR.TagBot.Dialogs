@@ -22,7 +22,7 @@ export const IgnoreUserDialog: builder.IDialogWaterfallStep[] = [
     var message = new builder.Message();
     message.text(
       "I won't contact you untill at least " +
-        datefns.format(ignoreUntill, "DD/MM/yyyy")
+        datefns.format(ignoreUntill, "DD/MM/YYYY")
     );
 
     const userId = session.message.user.id;
