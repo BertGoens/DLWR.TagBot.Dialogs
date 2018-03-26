@@ -7,7 +7,7 @@ if (!fs.existsSync(logdir)) {
   fs.mkdirSync(logdir);
 }
 
-const logger = new winston.Logger({
+const errorLogger = new winston.Logger({
   transports: [
     new winston.transports.Console({
       name: "console",
@@ -25,27 +25,38 @@ const logger = new winston.Logger({
       filename: "info.log",
       level: "info",
       name: "info-file"
-    }),
-    new winston.transports.File({
-      dirname: logdir,
-      filename: "debug.log",
-      level: "debug",
-      name: "debug-file"
     })
   ],
   handleExceptions: true,
   exitOnError: true
 });
 
-/*
-if (process.env.NODE_ENV === "production") {
-  logger.remove("console");
-}
-*/
+const traceLogger = new winston.Logger({
+  transports: [
+    new winston.transports.Console({
+      name: "console",
+      colorize: true,
+      level: "silly"
+    }),
+    new winston.transports.File({
+      dirname: logdir,
+      filename: "trace.log",
+      level: "silly",
+      name: "trace-file"
+    })
+  ],
+  handleExceptions: true,
+  exitOnError: true
+});
 
-export const logError = logger.error;
-export const logWarning = logger.warn;
-export const logInfo = logger.info;
-export const logVerbose = logger.verbose;
-export const logDebug = logger.debug;
-export const logSilly = logger.silly;
+if (process.env.NODE_ENV === "production") {
+  errorLogger.remove("console");
+  traceLogger.remove("console");
+}
+
+export const logError = errorLogger.error;
+export const logWarning = errorLogger.warn;
+export const logInfo = errorLogger.info;
+export const logVerbose = traceLogger.verbose;
+export const logDebug = traceLogger.debug;
+export const logSilly = traceLogger.silly;
