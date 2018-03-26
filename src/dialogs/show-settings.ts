@@ -1,5 +1,6 @@
 import * as builder from "botbuilder";
 import { SettingsStore } from "../stores";
+import { logError } from "../util";
 
 export const ShowSettingsLuisName = "Bot.ShowSettings";
 export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
@@ -8,11 +9,16 @@ export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
     var channelId = session.message.source;
 
     var userSettings = await SettingsStore.GetSettingsById(userId, channelId);
+
     var reply = new builder.Message();
     if (userSettings.error) {
       reply.text("Something went wrong, please try again later.");
     } else {
-      var text = "Your settings are:  \n" + JSON.stringify(userSettings.data);
+      var text =
+        "Your settings are:  \n" +
+        `${userSettings &&
+          userSettings.data &&
+          JSON.stringify(userSettings.data)}`;
       reply.text(text);
     }
 

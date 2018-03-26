@@ -25,6 +25,12 @@ const logger = new winston.Logger({
       filename: "info.log",
       level: "info",
       name: "info-file"
+    }),
+    new winston.transports.File({
+      dirname: logdir,
+      filename: "debug.log",
+      level: "debug",
+      name: "debug-file"
     })
   ],
   handleExceptions: true,
@@ -37,9 +43,9 @@ if (process.env.NODE_ENV === "production") {
 }
 */
 
-export const error = logger.error;
-export const warn = logger.warn;
-export const info = logger.info;
-export const verbose = logger.verbose;
-export const debug = logger.debug;
-export const silly = logger.silly;
+export const logError = logger.error;
+export const logWarning = logger.warn;
+export const logInfo = logger.info;
+export const logVerbose = logger.verbose;
+export const logDebug = logger.debug;
+export const logSilly = logger.silly;

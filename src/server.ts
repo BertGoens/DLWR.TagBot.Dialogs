@@ -11,11 +11,11 @@ import * as builder from "botbuilder";
 import * as restify from "restify";
 import * as dialogs from "./dialogs";
 import * as fs from "fs";
-import { info } from "./util";
+import { logInfo, logSilly } from "./util";
 
 // log important stuff
-info("Node version: " + process.version);
-info("NODE_ENV=", process.env.NODE_ENV);
+logInfo("Node version: " + process.version);
+logInfo("NODE_ENV=" + process.env.NODE_ENV);
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -26,8 +26,8 @@ const addr = argv.addr || process.env.addr || process.env.ADDR || "127.0.0.1";
 const apiMessageController = "/api/messages";
 
 server.listen(port, addr, function() {
-  info("%s listening to %s", server.name, server.url);
-  info("Messages Controller: " + server.url + apiMessageController);
+  logInfo("%s listening to %s", server.name, server.url);
+  logInfo("Messages Controller: " + server.url + apiMessageController);
 });
 
 const assetPath = join(__dirname, "..", "static");

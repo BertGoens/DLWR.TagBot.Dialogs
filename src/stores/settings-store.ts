@@ -1,5 +1,5 @@
 import axios from "axios";
-import { info, error, debug } from "../util";
+import { logInfo, logError, logDebug } from "../util";
 
 var storeUrl = "";
 if (
@@ -13,7 +13,7 @@ if (
   storeUrl = process.env.SETTINGS_STORE;
 }
 
-info("Settings-store Url: " + storeUrl);
+logInfo("Settings-store Url: " + storeUrl);
 const store = axios.create({
   baseURL: storeUrl
 });
@@ -28,17 +28,18 @@ const GetSettingsById = async (
   id: string,
   channel?: string
 ): Promise<{ error: any; data: ISettings }> => {
+  var errResult: any = {};
   try {
     const params = `/?id=${id}`;
     const url = store.defaults.baseURL + params;
-    debug("GET ", url);
-    const response = await store.get(params);
-    const data: ISettings = response.data;
-    return { error: null, data: data };
+    logDebug("GET ", url);
+    const result = await store.get(params);
+    return { error: null, data: result.data };
   } catch (err) {
-    error(err);
-    return { error: err, data: null };
+    errResult = err;
+    logError(err);
   }
+  return { error: errResult, data: null };
 };
 
 const SaveSettingsById = async (
@@ -48,11 +49,11 @@ const SaveSettingsById = async (
   try {
     const params = `/?id=${id}`;
     const url = store.defaults.baseURL + params;
-    debug("PUT ", url);
+    logDebug("PUT ", url);
     var result = await store.put(params, settings);
     return { error: null, result: true };
   } catch (err) {
-    error(err);
+    logError(err);
     return { error: err, result: null };
   }
 };
@@ -64,11 +65,11 @@ const CreateSettings = async (
   try {
     const params = "/";
     const url = store.defaults.baseURL + params;
-    debug("POST ", url);
+    logDebug("POST ", url);
     var result = await store.post(params, settings);
     return { error: null, result: true };
   } catch (err) {
-    error(err);
+    logError(err);
     return { error: err, result: null };
   }
 };
