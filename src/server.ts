@@ -11,7 +11,7 @@ import * as builder from "botbuilder";
 import * as restify from "restify";
 import * as dialogs from "./dialogs";
 import * as fs from "fs";
-import { logInfo, logSilly } from "./util";
+import { logInfo, logSilly, botSubscribeEvents } from "./util";
 
 // log important stuff
 logInfo("Node version: " + process.version);
@@ -96,12 +96,4 @@ var intents = new builder.IntentDialog({ recognizers: [recognizer] })
 
 bot.dialog("/", intents);
 
-bot.on("contactRelationUpdate", function(message) {
-  if (message.action === "add") {
-    var name = message.user ? message.user.name : null;
-    var reply = new builder.Message()
-      .address(message.address)
-      .text("Hello %s. Thanks for adding me.", name || "there");
-    bot.send(reply);
-  }
-});
+botSubscribeEvents(bot);
