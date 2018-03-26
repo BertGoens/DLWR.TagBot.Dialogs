@@ -1,9 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2017",
+    "inlineSourceMap": true,
     "module": "commonjs",
-
-    "sourceMap": true,
     "rootDir": "src",
     "outDir": "build"
   },
