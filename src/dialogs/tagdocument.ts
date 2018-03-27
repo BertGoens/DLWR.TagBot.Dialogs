@@ -1,7 +1,8 @@
 import { IDocument } from "../stores";
 import * as builder from "botbuilder";
 
-export const LoopDialog: builder.IDialogWaterfallStep[] = [
+export const TagDocumentName = "TagDocument";
+export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
   function selectDocument(session, results, next) {
     if (session.userData.documentsTagged >= session.userData.documentsToTag) {
       // End
@@ -54,6 +55,6 @@ export const LoopDialog: builder.IDialogWaterfallStep[] = [
     );
     session.userData.documentsTagged += 1;
     session.send(msg);
-    session.replaceDialog("TagDocument");
+    session.replaceDialog(TagDocumentName);
   }
 ];

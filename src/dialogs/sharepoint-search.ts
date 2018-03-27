@@ -1,4 +1,5 @@
 import * as builder from "botbuilder";
+import { TagDocumentName } from "./tagdocument";
 import { findDocuments } from "../stores";
 
 export const SharePointSearchLuisName = "SharePoint.Search";
@@ -56,7 +57,7 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 
       session.userData.documentsTagged = 0;
       session.userData.documentsToTag = numberToTag;
-      session.replaceDialog("TagDocument");
+      session.replaceDialog(TagDocumentName);
     } else {
       // End
       session.endDialog(new builder.Message().text("Done tagging for today"));

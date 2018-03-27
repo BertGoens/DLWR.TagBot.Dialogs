@@ -75,7 +75,7 @@ bot.set("storage", new builder.MemoryBotStorage());
 // Main dialog with LUIS
 var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
 
-bot.dialog("TagDocument", dialogs.LoopDialog);
+bot.dialog(dialogs.TagDocumentName, dialogs.TagDocumentDialog);
 
 var intents = new builder.IntentDialog({
   recognizers: [recognizer],
