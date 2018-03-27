@@ -39,14 +39,19 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
       // no entities detected, ask user for a number
       builder.Prompts.number(
         session,
-        `${documents.length} documents found, how many would you like to tag?`
+        `${documents.length} documents found, how many would you like to tag?`,
+        {
+          integerOnly: true,
+          minValue: 0,
+          maxValue: documents.length,
+          maxRetries: 1
+        }
       );
     }
   },
   function prepareUser(session, results, next) {
     var numberToTag = parseInt(results.response);
 
-    // TODO: validate numberToTag
     if (results.response > 0) {
       // remove excess documents from tag queue
       var docs: [any] = session.userData.documents;
