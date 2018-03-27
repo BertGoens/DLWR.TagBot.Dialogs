@@ -35,7 +35,7 @@ const GetSettingsById = (
   return store
     .get(params)
     .then(function(result) {
-      logDebug("succesfull " + url + " request");
+      logDebug("succesfull request " + url);
       return { error: null, data: result.data };
     })
     .catch(function(error) {

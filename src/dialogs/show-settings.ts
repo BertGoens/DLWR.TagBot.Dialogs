@@ -1,6 +1,7 @@
 import * as builder from "botbuilder";
 import { SettingsStore } from "../stores";
 import { logError, logDebug } from "../util";
+import { debuglog } from "util";
 
 export const ShowSettingsLuisName = "Bot.ShowSettings";
 export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
@@ -9,12 +10,28 @@ export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
     var channelId = session.message.source;
 
     var userSettings: any = {};
+
+    // retrieve the settings by id
+    var createSettings = false;
     try {
       userSettings = await SettingsStore.GetSettingsById(userId, channelId);
-      logDebug("Succesfull")
+      logDebug("Succesfull");
     } catch (error) {
-      logDebug("show-settings catch");
-      // logError(error); // throws TypeError: Converting circular structure to JSON
+      logDebug("GetSettingsById catch");
+      createSettings = true;
+    }
+
+    if (createSettings) {
+      debuglog("Create settings");
+      try {
+        userSettings = await SettingsStore.CreateSettings(userId, {
+          userId: userId,
+          channelId: channelId
+        });
+        logDebug("Succesfull");
+      } catch (error) {
+        logDebug("CreateSettings catch");
+      }
     }
 
     var reply = new builder.Message();
