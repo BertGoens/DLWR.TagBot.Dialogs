@@ -5,7 +5,10 @@
   "main": "server.js",
   "scripts": {
     "start": "node app.js",
-    "compile": "tsc"
+    "tsc": "node ./node_modules/typescript/bin/tsc",
+    "tsc:w": "node ./node_modules/typescript/bin/tsc --watch",
+    "tsc:path": "tsc",
+    "tsc:path:w": "tsc -w"
   },
   "author": "Bert Goens",
   "license": "UNLICENSED",
@@ -25,6 +28,7 @@
     "minimist": "^1.2.0",
     "node-schedule": "^1.3.0",
     "restify": "^4.3.0",
+    "typescript": "^2.7.2",
     "winston": "^2.4.1"
   },
   "devDependencies": {
