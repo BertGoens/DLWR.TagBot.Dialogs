@@ -6,7 +6,7 @@ require("dotenv-safe").config({
 // command line arguments (overrule .env file)
 const argv = require("minimist")(process.argv.slice(2));
 
-import { logInfo, logSilly, botSubscribeEvents } from "./util";
+import { logInfo, logSilly, botSubscribeEvents, applyRoutes } from "./util";
 import { format } from "date-fns";
 logSilly("Starting Server", format(Date.now(), "YYYY/MM/DD-HH:mm:ss"));
 
@@ -34,33 +34,10 @@ server.listen(port, addr, function() {
 });
 
 const assetPath = join(__dirname, "..", "static");
-server.get(
-  "/",
-  restify.plugins.serveStatic({
-    directory: assetPath,
-    default: "/index.html"
-  })
-);
-
-server.get("/favicon.png", (req, res, next) => {
-  const faviconPath = join(assetPath, "favicon.png");
-  fs.readFile(faviconPath, function(err, file) {
-    if (err) {
-      res.send(500);
-      return next();
-    }
-
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "image/png");
-    res.write(file);
-    res.end();
-    return next();
-  });
-});
-
-server.get("/help", (req, res, next) => {
-  res.send("hello @" + addr + ":" + port);
-  next();
+applyRoutes(server, {
+  assetPath: assetPath,
+  addr: addr,
+  port: port
 });
 
 // Create chat connector for communicating with the Bot Framework Service
