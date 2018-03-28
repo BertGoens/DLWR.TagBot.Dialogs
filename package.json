@@ -21,7 +21,6 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "bluebird": "^3.4.7",
     "botbuilder": "^3.13.1",
     "date-fns": "^1.29.0",
     "dotenv-safe": "^5.0.1",
