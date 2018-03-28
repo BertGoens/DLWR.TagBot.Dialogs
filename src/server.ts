@@ -6,12 +6,15 @@ require("dotenv-safe").config({
 // command line arguments (overrule .env file)
 const argv = require("minimist")(process.argv.slice(2));
 
+import { logInfo, logSilly, botSubscribeEvents } from "./util";
+import { format } from "date-fns";
+logSilly("Starting Server", format(Date.now(), "YYYY/MM/DD-HH:mm:ss"));
+
 import { join } from "path";
 import * as builder from "botbuilder";
 import * as restify from "restify";
 import * as dialogs from "./dialogs";
 import * as fs from "fs";
-import { logInfo, logSilly, botSubscribeEvents } from "./util";
 
 // log important stuff
 logInfo("Node version: " + process.version);
@@ -73,7 +76,9 @@ var bot = new builder.UniversalBot(connector);
 bot.set("storage", new builder.MemoryBotStorage());
 
 // Main dialog with LUIS
-var recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL);
+export const recognizer = new builder.LuisRecognizer(
+  process.env.LUIS_MODEL_URL
+);
 
 bot.dialog(dialogs.TagDocumentName, dialogs.TagDocumentDialog);
 
@@ -83,16 +88,13 @@ var intents = new builder.IntentDialog({
 })
   .matches(dialogs.GreetingLuisName, dialogs.GreetingDialog)
   .matches(dialogs.SharePointSearchLuisName, dialogs.SharePointSearchDialog)
-  .matches("Utilities.Confirm", session => {
-    session.send("Ok then.");
-  })
+  .matches(dialogs.ConfirmLuisName, dialogs.ConfirmDialog)
+  .matches(dialogs.CancelLuisName, dialogs.CancelLuisName)
   .matches(dialogs.ShowSettingsLuisName, dialogs.ShowSettingsDialog)
   .matches(dialogs.IgnoreUserLuisName, dialogs.IgnoreUserDialog)
   .matches(dialogs.UnignoreUserLuisName, dialogs.UnignoreUserialog)
   .matches(dialogs.HelpDialogLuisName, dialogs.HelpDialog)
-  .matches("Utilities.Stop", session => {
-    session.endDialog();
-  })
+  .matches(dialogs.StopLuisName, dialogs.StopDialog)
   .matches(dialogs.ReminderCreateLuisName, dialogs.ReminderCreateDialog)
   .matches(dialogs.NoneLuisName, dialogs.NoneDialog)
   .onDefault(dialogs.onDefault);
