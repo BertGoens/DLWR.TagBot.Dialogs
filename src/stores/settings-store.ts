@@ -1,21 +1,18 @@
 import axios from "axios";
-import { logInfo, logError, logDebug } from "../util";
+import { logInfo } from "../util";
+import { LogHandleAxiosError } from "../util/axios-helpers";
 
-var storeUrl = "";
-if (
-  process.env.NODE_ENV == "PRODUCTION" ||
-  process.env.NODE_ENV == "production"
-) {
-  storeUrl = process.env.SETTINGS_STORE;
-} else if (process.env.SETTINGS_LOCAL_STORE) {
-  storeUrl = process.env.SETTINGS_LOCAL_STORE;
-} else {
-  storeUrl = process.env.SETTINGS_STORE;
-}
+const getStoreUrl = (): string => {
+  if (process.env.SETTINGS_LOCAL_STORE) {
+    return process.env.SETTINGS_LOCAL_STORE;
+  }
+  if (process.env.SETTINGS_STORE) {
+    return process.env.SETTINGS_STORE;
+  }
+};
 
-logInfo("Settings-store Url: " + storeUrl);
 const store = axios.create({
-  baseURL: storeUrl
+  baseURL: getStoreUrl()
 });
 
 export interface ISettings {
@@ -25,72 +22,45 @@ export interface ISettings {
   lastMessageSent?: Date;
 }
 
-const GetSettingsById = (
+async function GetSettingsById(
   id: string,
   channel?: string
-): Promise<{ error: any; data: ISettings }> => {
+): Promise<ISettings> {
+  const params = `?id=${id}`;
+  const url = getStoreUrl() + params;
+
+  try {
+    const result = await store.get(params);
+    logInfo("GET", result.status, url);
+    return result.data;
+  } catch (error) {
+    LogHandleAxiosError({ error: error, url: url });
+  }
+}
+
+async function SaveSettingsById(id: string, settings: ISettings) {
   const params = `?id=${id}`;
   const url = store.defaults.baseURL + params;
-  logDebug("GET ", url);
-  return store
-    .get(params)
-    .then(function(result) {
-      logDebug("succesfull request " + url);
-      return { error: null, data: result.data };
-    })
-    .catch(function(error) {
-      logInfo(
-        `Request: ${url} failed: ${error.response && error.response.status}`
-      );
-      if (error.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        logError(error.message);
-      } else if (error.request) {
-        // The request was made but no response was received
-        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-        // http.ClientRequest in node.js
-        logError(error.request);
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        logError("Error", error.message);
-      }
-
-      return { error: error, data: null };
-    });
-};
-
-const SaveSettingsById = async (
-  id: string,
-  settings: ISettings
-): Promise<{ error: any; result: boolean }> => {
   try {
-    const params = `?id=${id}`;
-    const url = store.defaults.baseURL + params;
-    logDebug("PUT ", url);
+    logInfo("PUT", result.status, url);
     var result = await store.put(params, settings);
-    return { error: null, result: true };
-  } catch (err) {
-    logError(err);
-    Promise.reject(err);
+    return result.data;
+  } catch (error) {
+    LogHandleAxiosError({ error: error, url: url });
   }
-};
+}
 
-const CreateSettings = async (
-  id: string,
-  settings: ISettings
-): Promise<{ error: any; result: boolean }> => {
+async function CreateSettings(id: string, settings: ISettings) {
+  const params = "";
+  const url = store.defaults.baseURL + params;
   try {
-    const params = "";
-    const url = store.defaults.baseURL + params;
-    logDebug("POST ", url);
+    logInfo("POST", result.status, url);
     var result = await store.post(params, settings);
-    return { error: null, result: true };
-  } catch (err) {
-    logError(err);
-    Promise.reject(err);
+    return result.data;
+  } catch (error) {
+    LogHandleAxiosError({ error: error, url: url });
   }
-};
+}
 
 export const SettingsStore = {
   CreateSettings: CreateSettings,

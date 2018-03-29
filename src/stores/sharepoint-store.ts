@@ -1,25 +1,60 @@
-var documents = ["1.docs", "2.pdf", "3.jpeg", "4.pptx", "5.docx"];
+import axios from "axios";
+import { logInfo } from "../util";
+import { LogHandleAxiosError } from "../util/axios-helpers";
+
+const getStoreUrl = (): string => {
+  if (process.env.SHAREPOINT_LOCAL_STORE) {
+    return process.env.SHAREPOINT_LOCAL_STORE;
+  }
+  if (process.env.SHAREPOINT_STORE) {
+    return process.env.SHAREPOINT_STORE;
+  }
+};
+
+const store = axios.create({
+  baseURL: getStoreUrl()
+});
 
 export interface IDocument {
-  name: string;
-  location: string;
+  Name: string;
+  Tags: string[];
+  Location: string;
+  Author: string;
+  ListItemId: number;
 }
 
-export const findDocuments = (author: string) => {
-  // Filling the hotels results manually just for demo purposes
-  var untaggedDocuments: IDocument[] = [];
-  for (var i = 1; i <= 3; i++) {
-    const docNr = Math.ceil(Math.random() * documents.length);
+export interface IQueryOptions {
+  title?: string;
+  author?: string;
+}
 
-    const takeDocument = documents[docNr];
+async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
+  //searchquery="Title:*"&author=Thomas Maes"
+  // ?searchquery="Author:John AND Title:Test*";
+  const fillParams = (q: IQueryOptions) => {
+    let result = "";
+    if (q.title && q.author) {
+      return `?searchQuery="Title:${q.title}* AND Author=${q.author}"`;
+    } else if (q.title) {
+      return `?searchQuery="Title:${q.title}*"`;
+    } else if (q.author) {
+      return `?searchQuery="Author:${q.author}"`;
+    } else {
+      return `?searchQuery="Title:*"`;
+    }
+  };
+  const params = fillParams(q);
+  const url = getStoreUrl() + params;
 
-    const doc: IDocument = {
-      name: takeDocument,
-      location: "http://txti.es/"
-    };
-
-    untaggedDocuments.push(doc);
+  try {
+    const result = await store.get(params);
+    logInfo("GET", result.status, url);
+    return result.data;
+  } catch (error) {
+    LogHandleAxiosError({ error: error, url: url });
   }
+}
 
-  return untaggedDocuments;
+export const SharePointStore = {
+  GetDocuments: GetDocuments
 };
