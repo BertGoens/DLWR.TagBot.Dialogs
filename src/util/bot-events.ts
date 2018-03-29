@@ -47,11 +47,8 @@ export const botSubscribeEvents = (bot: any) => {
 
     try {
       let settings = await SettingsStore.GetSettingsById(userId, channelId);
-      settings.data.lastMessageSent = datefns.addDays(Date.now(), 0);
-      const result = await SettingsStore.SaveSettingsById(
-        userId,
-        settings.data
-      );
+      settings.lastMessageSent = datefns.addDays(Date.now(), 0);
+      const result = await SettingsStore.SaveSettingsById(userId, settings);
       return;
     } catch (error) {
       // user doesn't exist

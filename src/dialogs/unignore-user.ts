@@ -9,18 +9,19 @@ export const UnignoreUserialog: builder.IDialogWaterfallStep[] = [
 
     const userId = session.message.user.id;
     const channel = session.message.source;
-    const result = await SettingsStore.GetSettingsById(userId, channel);
-    if (result.error) {
-      session.send("Something went wrong, please try again later.");
-    } else {
+
+    try {
+      const result = await SettingsStore.GetSettingsById(userId, channel);
       const newSettings: ISettings = {
         botMutedUntill: null,
-        channelId: result.data.channelId,
-        userId: result.data.userId
+        channelId: result.channelId,
+        userId: result.userId
       };
 
       await SettingsStore.SaveSettingsById(userId, newSettings);
       session.send(message);
+    } catch (error) {
+      session.send("Something went wrong, please try again later.");
     }
   }
 ];

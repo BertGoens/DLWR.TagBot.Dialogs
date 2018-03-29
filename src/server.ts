@@ -58,10 +58,12 @@ export const recognizer = new builder.LuisRecognizer(
 );
 
 bot.dialog(dialogs.TagDocumentName, dialogs.TagDocumentDialog);
+bot.dialog(dialogs.SharePointSearchLuisName, dialogs.SharePointSearchDialog);
 
-var intents = new builder.IntentDialog({
+export const intentThreshold = 0.4;
+export const intentDialog = new builder.IntentDialog({
   recognizers: [recognizer],
-  intentThreshold: 0.4
+  intentThreshold: intentThreshold
 })
   .matches(dialogs.GreetingLuisName, dialogs.GreetingDialog)
   .matches(dialogs.SharePointSearchLuisName, dialogs.SharePointSearchDialog)
@@ -76,6 +78,6 @@ var intents = new builder.IntentDialog({
   .matches(dialogs.NoneLuisName, dialogs.NoneDialog)
   .onDefault(dialogs.onDefault);
 
-bot.dialog("/", intents);
+bot.dialog("/", intentDialog);
 
 botSubscribeEvents(bot);
