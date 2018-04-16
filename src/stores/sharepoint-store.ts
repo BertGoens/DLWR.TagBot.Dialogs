@@ -34,13 +34,13 @@ async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
   const fillParams = (q: IQueryOptions) => {
     let result = "";
     if (q.title && q.author) {
-      return `?searchQuery="Title:${q.title}* AND Author=${q.author}"`;
+      return `?searchQuery=(title:${q.title}*) (author:${q.author}*)`;
     } else if (q.title) {
-      return `?searchQuery="Title:${q.title}*"`;
+      return `?searchQuery=(title:${q.title}*)`;
     } else if (q.author) {
-      return `?searchQuery="Author:${q.author}"`;
+      return `?searchQuery=(author:${q.author}*)`;
     } else {
-      return `?searchQuery="Title:*"`;
+      return `?searchQuery=`;
     }
   };
   const params = fillParams(q);

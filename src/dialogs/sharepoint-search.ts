@@ -12,7 +12,10 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 
     session.sendTyping();
 
-    var documents = await SharePointStore.GetDocuments({});
+    var documents = await SharePointStore.GetDocuments({
+      title: "",
+      author: ""
+    });
 
     // try extracting entities
     var numberEntity = builder.EntityRecognizer.findEntity(
