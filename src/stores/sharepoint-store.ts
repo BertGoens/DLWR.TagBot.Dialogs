@@ -24,30 +24,42 @@ export interface IDocument {
 }
 
 export interface IQueryOptions {
-  title?: string;
-  author?: string;
+  title?: string[];
+  author?: string[];
+  filetype?: string[];
 }
 
 async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
   //searchquery="Title:*"&author=Thomas Maes"
   // ?searchquery="Author:John AND Title:Test*";
   const fillParams = (q: IQueryOptions) => {
-    let result = "";
-    if (q.title && q.author) {
-      return `?searchQuery=(title:${q.title}*) (author:${q.author}*)`;
-    } else if (q.title) {
-      return `?searchQuery=(title:${q.title}*)`;
-    } else if (q.author) {
-      return `?searchQuery=(author:${q.author}*)`;
-    } else {
-      return `?searchQuery=`;
+    let result = "?searchQuery=";
+
+    if (q.title) {
+      q.title.forEach(myTitle => {
+        result += `(title:${myTitle}*) `;
+      });
     }
+    if (q.author) {
+      q.author.forEach(myAuthor => {
+        result += `(author:${myAuthor}*) `;
+      });
+    }
+    if (q.filetype) {
+      q.filetype.forEach(myFiletype => {
+        result += `(filetype:${myFiletype}) `;
+      });
+    }
+
+    return result;
   };
+
   const params = fillParams(q);
   const url = getStoreUrl() + params;
 
   try {
     const result = await store.get(params);
+    // Works: http://localhost:4000/api/SharePoint?searchquery=(filetype:docx) (filetype:txt)
     logInfo("GET", result.status, url);
     return result.data;
   } catch (error) {

@@ -1,6 +1,10 @@
 import * as builder from "botbuilder";
 import { TagDocumentName } from "./tagdocument";
-import { SharePointStore, IDocument } from "../stores";
+import { SharePointStore, IDocument, IQueryOptions } from "../stores";
+import {
+  resolveDocumentFileType,
+  resolveDocumentAuthor
+} from "../util/entity-resolver";
 
 export const SharePointSearchLuisName = "SharePoint.Search";
 export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
@@ -12,10 +16,28 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 
     session.sendTyping();
 
-    var documents = await SharePointStore.GetDocuments({
-      title: "",
-      author: ""
-    });
+    const documentFilter: IQueryOptions = {
+      title: resolveDocumentAuthor(
+        builder.EntityRecognizer.findAllEntities(
+          args.entities,
+          "document_title"
+        )
+      ),
+      author: resolveDocumentAuthor(
+        builder.EntityRecognizer.findAllEntities(
+          args.entities,
+          "document_author"
+        )
+      ),
+      filetype: resolveDocumentFileType(
+        builder.EntityRecognizer.findAllEntities(
+          args.entities,
+          "document_filetypes"
+        )
+      )
+    };
+
+    var documents = await SharePointStore.GetDocuments(documentFilter);
 
     // try extracting entities
     var numberEntity = builder.EntityRecognizer.findEntity(
