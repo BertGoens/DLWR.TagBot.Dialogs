@@ -13,7 +13,11 @@ export const HelpDialog: builder.IDialogWaterfallStep[] = [
       )
       .suggestedActions(
         builder.SuggestedActions.create(session, [
-          builder.CardAction.imBack(session, "Search", "Search"),
+          builder.CardAction.imBack(
+            session,
+            "Search for word documents",
+            "Search"
+          ),
           builder.CardAction.imBack(session, "Show my settings", "Settings")
         ])
       );
