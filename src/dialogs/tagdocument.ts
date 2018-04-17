@@ -1,7 +1,7 @@
-import { IDocument } from "../stores";
+import { IDocument, KeywordStore } from "../stores";
 import * as builder from "botbuilder";
 import { recognizer, intentThreshold } from "../server";
-import { logSilly } from "../util";
+import { logSilly, logInfo } from "../util";
 import { NoneLuisName, CancelLuisName, StopLuisName, ConfirmLuisName } from ".";
 import { debuglog } from "util";
 
@@ -17,25 +17,33 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
       next();
     }
   },
-  function tagDocument(session, results, next) {
+  async function tagDocument(session, results, next) {
     // take tag document
     var document: IDocument =
       session.userData.documents[session.userData.documentsTagged];
 
     session.sendTyping();
     // Get suggested tags
-    var suggestedTags = ["Skype", "Chatbot", "Autonomous"];
-    var text = "Some suggested tags:  \n" + suggestedTags.join(",  ");
+    var keywords = await KeywordStore.GetKeywords(document.Path);
+    let suggestedTags = [];
+    if (keywords && keywords.documents && keywords.documents[0]) {
+      suggestedTags = keywords.documents[0].keyPhrases;
+    }
+    logInfo(`${suggestedTags.length} key words/phrase received, taking 5`);
+    // Do not exceed more then 4 tags (don't bombard the user with suggestions)
+    suggestedTags = suggestedTags.slice(0, 4);
+
+    var text = "Some suggested tags:  \n" + suggestedTags.join(",\n");
 
     var linkToUrl = builder.CardAction.openUrl(
       session,
-      document.Location,
-      "Open " + document.Name
+      document.Path,
+      "Open " + document.Title
     );
 
     var cardMsg = new builder.Message(session);
     cardMsg.attachments([
-      new builder.HeroCard(session).title(document.Name).buttons([linkToUrl])
+      new builder.HeroCard(session).title(document.Title).buttons([linkToUrl])
     ]);
 
     session.send(cardMsg);
@@ -45,7 +53,7 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
       maxRetries: 2
     });
   },
-  async function ConfirmTags(session, results, next) {
+  function ConfirmTags(session, results, next) {
     // analyse if the user wants to quit, or added tags
     if (results && results.response) {
       builder.LuisRecognizer.recognize(

@@ -16,11 +16,11 @@ const store = axios.create({
 });
 
 export interface IDocument {
-  Name: string;
+  Title: string;
   Tags: string[];
-  Location: string;
+  Path: string;
   Author: string;
-  ListItemId: number;
+  ListItemID: number;
 }
 
 export interface IQueryOptions {
