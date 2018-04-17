@@ -30,8 +30,8 @@ export interface IQueryOptions {
 }
 
 async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
-  //searchquery="Title:*"&author=Thomas Maes"
-  // ?searchquery="Author:John AND Title:Test*";
+  // match the query language
+  // https://docs.microsoft.com/en-us/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference
   const fillParams = (q: IQueryOptions) => {
     let result = "?searchQuery=";
 
