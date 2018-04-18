@@ -49,10 +49,12 @@ const traceLogger = new winston.Logger({
   exitOnError: true
 });
 
+/*
 if (process.env.NODE_ENV === "production") {
   errorLogger.remove("console");
   traceLogger.remove("console");
 }
+*/
 
 export const logError = errorLogger.error;
 export const logWarning = errorLogger.warn;
