@@ -1,5 +1,5 @@
 import * as builder from "botbuilder";
-import { TagDocumentName } from "./tagdocument";
+import { TagDocumentName } from "./tag-document";
 import { SharePointStore, IDocument, IQueryOptions } from "../stores";
 import {
   resolveDocumentFileType,
