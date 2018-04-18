@@ -31,6 +31,8 @@ export interface IQueryOptions {
 async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
   // match the query language
   // https://docs.microsoft.com/en-us/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference
+  // Example url:
+  // http://....?searchquery=(filetype:docx) (filetype:txt)
   const fillParams = (q: IQueryOptions) => {
     let result = "?searchQuery=";
 
@@ -58,8 +60,20 @@ async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
 
   try {
     const result = await store.get(params);
-    // Works: http://localhost:4000/api/SharePoint?searchquery=(filetype:docx) (filetype:txt)
-    logInfo("GET", result.status, url);
+    logInfo(result.config.method, result.status, result.config.url);
+    return result.data;
+  } catch (error) {
+    LogHandleAxiosError({ error: error, url: url });
+  }
+}
+
+async function SaveDocument(document: IDocument) {
+  const params = `?file=${document.Path}&tags=${document.Tags}`;
+  const url = myStoreUrl + params;
+
+  try {
+    const result = await store.get(params);
+    logInfo(result.config.method, result.status, result.config.url);
     return result.data;
   } catch (error) {
     LogHandleAxiosError({ error: error, url: url });
@@ -67,5 +81,6 @@ async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
 }
 
 export const SharePointStore = {
-  GetDocuments: GetDocuments
+  GetDocuments: GetDocuments,
+  SaveDocument: SaveDocument
 };
