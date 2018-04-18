@@ -8,6 +8,6 @@ export * from "./reminder-create";
 export * from "./sharepoint-search";
 export * from "./show-settings";
 export * from "./stop";
-export * from "./tagdocument";
+export * from "./tag-document";
 export * from "./ignore-user";
 export * from "./unignore-user";
