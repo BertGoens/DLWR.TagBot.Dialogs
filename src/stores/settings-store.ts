@@ -16,8 +16,8 @@ const store = axios.create({
 });
 
 export interface ISettings {
-  userId: string;
-  channelId: string;
+  userId?: string;
+  channelId?: string;
   botMutedUntill?: Date;
   lastMessageSent?: Date;
 }
@@ -38,7 +38,10 @@ async function GetSettingsById(
   }
 }
 
-async function SaveSettingsById(id: string, settings: ISettings) {
+async function SaveSettingsById(
+  id: string,
+  settings: ISettings
+): Promise<ISettings> {
   const params = `?id=${id}`;
   const url = store.defaults.baseURL + params;
   try {
@@ -50,7 +53,10 @@ async function SaveSettingsById(id: string, settings: ISettings) {
   }
 }
 
-async function CreateSettings(id: string, settings: ISettings) {
+async function CreateSettings(
+  id: string,
+  settings: ISettings
+): Promise<ISettings> {
   const params = "";
   const url = store.defaults.baseURL + params;
   try {
