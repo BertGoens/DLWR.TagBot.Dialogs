@@ -1,11 +1,14 @@
 import * as winston from "winston";
 import * as path from "path";
 import * as fs from "fs";
+import { format } from "date-fns";
 
 const logdir = path.join(__dirname, "..", "..", "log");
 if (!fs.existsSync(logdir)) {
   fs.mkdirSync(logdir);
 }
+
+const logDate = format(Date.now(), "YYYY_MM_DD");
 
 const errorLogger = new winston.Logger({
   transports: [
@@ -16,13 +19,13 @@ const errorLogger = new winston.Logger({
     }),
     new winston.transports.File({
       dirname: logdir,
-      filename: "error.log",
+      filename: logDate + "_error.log",
       level: "error",
       name: "error-file"
     }),
     new winston.transports.File({
       dirname: logdir,
-      filename: "info.log",
+      filename: logDate + "_info.log",
       level: "info",
       name: "info-file"
     })
