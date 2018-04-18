@@ -1,6 +1,7 @@
 import * as builder from "botbuilder";
 import * as datefns from "date-fns";
 import * as schedule from "node-schedule";
+import { resolveDateV2 } from "../util/entity-resolver";
 
 //import { SettingsStore } from "../stores";
 
@@ -11,9 +12,7 @@ const sendReminder = () => {
 export const ReminderCreateLuisName = "Reminder.Create";
 export const ReminderCreateDialog: builder.IDialogWaterfallStep[] = [
   async function createReminder(session, args, next) {
-    var muteUntillDate: Date = builder.EntityRecognizer.resolveTime(
-      args.entities
-    );
+    var muteUntillDate: Date = resolveDateV2(args.entities);
     schedule.scheduleJob(muteUntillDate, sendReminder);
 
     var text = "I'll remind you ";

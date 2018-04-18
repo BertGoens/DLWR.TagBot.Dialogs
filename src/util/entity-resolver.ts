@@ -37,3 +37,41 @@ export const resolveDocumentAuthor = (authorEntities: builder.IEntity[]) => {
   });
   return result;
 };
+
+/**
+ * Offers support to parse the following date entities:
+ *  builtin.datetimeV2.datetime
+ *  builtin.datetimeV2.date
+ *  builtin.datetimeV2.daterange
+ *  ---- NOT YET
+ *  builtin.datetimeV2.time
+ *  builtin.datetimeV2.timerange
+ *  builtin.datetimeV2.datetimerange
+ *  builtin.datetimeV2.duration
+ */
+export const resolveDateV2 = (entities: builder.IEntity[]) => {
+  var dateTime: any = builder.EntityRecognizer.findEntity(
+    entities,
+    "builtin.datetimeV2.datetime"
+  );
+
+  var date: any = builder.EntityRecognizer.findEntity(
+    entities,
+    "builtin.datetimeV2.date"
+  );
+
+  var daterange: any = builder.EntityRecognizer.findEntity(
+    entities,
+    "builtin.datetimeV2.daterange"
+  );
+
+  if (dateTime && dateTime.resolution) {
+    return dateTime.resolution.values[0].value;
+  }
+  if (date && date.resolution) {
+    return date.resolution.values[0].value;
+  }
+  if (daterange && daterange.resolution) {
+    return daterange.resolution.values[0].end;
+  }
+};
