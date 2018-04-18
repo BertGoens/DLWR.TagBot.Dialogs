@@ -85,9 +85,14 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
               }
             }
             var tagsToAdd = results.response;
-            var msg = new builder.Message().text(
-              "Do you want to add these tags: " + tagsToAdd.toString()
-            );
+            var msg = new builder.Message()
+              .text("Do you want to add these tags: " + tagsToAdd.toString())
+              .suggestedActions(
+                builder.SuggestedActions.create(session, [
+                  builder.CardAction.imBack(session, "Yes", "👍"),
+                  builder.CardAction.imBack(session, "No", "👎")
+                ])
+              );
             session.userData.tagsToAdd = tagsToAdd;
             builder.Prompts.text(session, msg);
           }
