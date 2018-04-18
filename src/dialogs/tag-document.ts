@@ -42,7 +42,10 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
     );
 
     const cardMsg = new builder.Message(session).attachments([
-      new builder.HeroCard(session).title(document.Title).buttons([linkToUrl])
+      new builder.HeroCard(session)
+        .title(document.Title)
+        .buttons([linkToUrl])
+        .subtitle("Author: ", document.Author)
     ]);
 
     session.send(cardMsg);
@@ -127,17 +130,19 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
               const document: IDocument =
                 session.userData.documents[session.userData.documentsTagged];
               document.Tags = session.userData.tagsToAdd;
-              SharePointStore.SaveDocument(document);
-              session.userData.documentsTagged += 1;
-              session.send(msg);
-              session.replaceDialog(TagDocumentName);
+              SharePointStore.SaveDocument(document).then(() => {
+                session.userData.documentsTagged += 1;
+                session.send(msg);
+                session.replaceDialog(TagDocumentName);
+              });
             } else if (
               [CancelLuisName, StopLuisName].includes(
                 highestScoringIntent.intent
               )
             ) {
               const msg = new builder.Message().text(
-                "Didn't add the tags" + session.userData.tagsToAdd
+                "Didn't add the tags",
+                session.userData.tagsToAdd
               );
               session.send(msg);
               session.replaceDialog(TagDocumentName);
