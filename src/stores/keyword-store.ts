@@ -1,6 +1,7 @@
 import axios from "axios";
-import { logInfo, getStoreUrl } from "../util";
+import { logInfo } from "../util";
 import { LogHandleAxiosError } from "../util/axios-helpers";
+import { getStoreUrl } from "../util/store-helper";
 
 const myStoreUrl = getStoreUrl({
   devStore: process.env.KEYWORD_LOCAL_STORE,
