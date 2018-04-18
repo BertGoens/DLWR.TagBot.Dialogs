@@ -1,4 +1,4 @@
-import { IDocument, KeywordStore } from "../stores";
+import { IDocument, KeywordStore, SharePointStore } from "../stores";
 import * as builder from "botbuilder";
 import { recognizer, intentThreshold } from "../server";
 import { logSilly, logInfo } from "../util";
@@ -125,6 +125,10 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
               var msg = new builder.Message().text(
                 "Adding these tags: " + session.userData.tagsToAdd
               );
+              var document: IDocument =
+                session.userData.documents[session.userData.documentsTagged];
+              document.Tags = session.userData.tagsToAdd;
+              SharePointStore.SaveDocument(document);
               session.userData.documentsTagged += 1;
               session.send(msg);
               session.replaceDialog(TagDocumentName);
