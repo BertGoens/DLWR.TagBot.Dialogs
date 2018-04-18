@@ -1,18 +1,14 @@
 import axios from "axios";
-import { logInfo } from "../util";
+import { logInfo, getStoreUrl } from "../util";
 import { LogHandleAxiosError } from "../util/axios-helpers";
 
-const getStoreUrl = (): string => {
-  if (process.env.SHAREPOINT_LOCAL_STORE) {
-    return process.env.SHAREPOINT_LOCAL_STORE;
-  }
-  if (process.env.SHAREPOINT_STORE) {
-    return process.env.SHAREPOINT_STORE;
-  }
-};
+const myStoreUrl = getStoreUrl({
+  devStore: process.env.SHAREPOINT_LOCAL_STORE,
+  prodStore: process.env.SHAREPOINT_STORE
+});
 
 const store = axios.create({
-  baseURL: getStoreUrl()
+  baseURL: myStoreUrl
 });
 
 export interface IDocument {
@@ -55,7 +51,7 @@ async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
   };
 
   const params = fillParams(q);
-  const url = getStoreUrl() + params;
+  const url = myStoreUrl + params;
 
   try {
     const result = await store.get(params);

@@ -1,18 +1,14 @@
 import axios from "axios";
-import { logInfo } from "../util";
+import { logInfo, getStoreUrl } from "../util";
 import { LogHandleAxiosError } from "../util/axios-helpers";
 
-const getStoreUrl = (): string => {
-  if (process.env.SETTINGS_LOCAL_STORE) {
-    return process.env.SETTINGS_LOCAL_STORE;
-  }
-  if (process.env.SETTINGS_STORE) {
-    return process.env.SETTINGS_STORE;
-  }
-};
+const myStoreUrl = getStoreUrl({
+  devStore: process.env.SETTINGS_LOCAL_STORE,
+  prodStore: process.env.SETTINGS_STORE
+});
 
 const store = axios.create({
-  baseURL: getStoreUrl()
+  baseURL: myStoreUrl
 });
 
 export interface ISettings {
@@ -27,7 +23,7 @@ async function GetSettingsById(
   channel?: string
 ): Promise<ISettings> {
   const params = `?id=${id}`;
-  const url = getStoreUrl() + params;
+  const url = myStoreUrl + params;
 
   try {
     const result = await store.get(params);
