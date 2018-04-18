@@ -16,7 +16,7 @@ export const HelpDialog: builder.IDialogWaterfallStep[] = [
           builder.CardAction.imBack(
             session,
             "Search for word documents",
-            "Search"
+            "Search for word documents"
           ),
           builder.CardAction.imBack(session, "Show my settings", "Settings")
         ])
