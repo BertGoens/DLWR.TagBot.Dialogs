@@ -30,7 +30,7 @@ async function GetKeywords(filepath: string): Promise<IKeywordCollection> {
 
   try {
     const result = await store.get(params);
-    logInfo("GET", result.status, url);
+    logInfo(result.config.method, result.status, result.config.url);
     return result.data;
   } catch (error) {
     LogHandleAxiosError({ error: error, url: url });

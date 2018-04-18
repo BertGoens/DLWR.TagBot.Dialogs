@@ -36,7 +36,7 @@ async function recognize(utterance: string): Promise<ILuisResponse> {
 
   try {
     const result = await store.get(utterance);
-    logInfo("GET", result.status, url);
+    logInfo(result.config.method, result.status, result.config.url);
     return result.data;
   } catch (error) {
     LogHandleAxiosError({ error: error, url: url });

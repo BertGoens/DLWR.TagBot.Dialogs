@@ -30,7 +30,7 @@ async function GetSettingsById(
 
   try {
     const result = await store.get(params);
-    logInfo("GET", result.status, url);
+    logInfo(result.config.method, result.status, result.config.url);
     return result.data;
   } catch (error) {
     LogHandleAxiosError({ error: error, url: url });
@@ -45,7 +45,7 @@ async function SaveSettingsById(
   const url = store.defaults.baseURL + params;
   try {
     var result = await store.put(params, settings);
-    logInfo("PUT", result.status, url);
+    logInfo(result.config.method, result.status, result.config.url);
     return result.data;
   } catch (error) {
     LogHandleAxiosError({ error: error, url: url });
@@ -59,8 +59,8 @@ async function CreateSettings(
   const params = "";
   const url = store.defaults.baseURL + params;
   try {
-    logInfo("POST", result.status, url);
     var result = await store.post(params, settings);
+    logInfo(result.config.method, result.status, result.config.url);
     return result.data;
   } catch (error) {
     LogHandleAxiosError({ error: error, url: url });
