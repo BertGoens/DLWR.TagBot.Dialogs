@@ -1,12 +1,14 @@
 import axios from "axios";
-import { logInfo } from "../util";
 import { LogHandleAxiosError } from "../util/axios-helpers";
+import { logInfo } from "../util/logger";
 import { getStoreUrl } from "../util/store-helper";
 
 const myStoreUrl = getStoreUrl({
   devStore: process.env.SHAREPOINT_LOCAL_STORE,
   prodStore: process.env.SHAREPOINT_STORE
 });
+
+logInfo("SharePoint StoreUrl:", myStoreUrl);
 
 const store = axios.create({
   baseURL: myStoreUrl

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { logInfo } from "../util";
+import { logInfo } from "../util/logger";
 import { LogHandleAxiosError } from "../util/axios-helpers";
 import { getStoreUrl } from "../util/store-helper";
 
@@ -7,6 +7,8 @@ const myStoreUrl = getStoreUrl({
   devStore: process.env.KEYWORD_LOCAL_STORE,
   prodStore: process.env.KEYWORD_STORE
 });
+
+logInfo("Keyword StoreUrl:", myStoreUrl);
 
 const store = axios.create({
   baseURL: myStoreUrl
