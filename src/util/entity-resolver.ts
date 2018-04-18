@@ -43,10 +43,10 @@ export const resolveDocumentAuthor = (authorEntities: builder.IEntity[]) => {
  *  builtin.datetimeV2.datetime
  *  builtin.datetimeV2.date
  *  builtin.datetimeV2.daterange
+ *  builtin.datetimeV2.datetimerange
  *  ---- NOT YET
  *  builtin.datetimeV2.time
  *  builtin.datetimeV2.timerange
- *  builtin.datetimeV2.datetimerange
  *  builtin.datetimeV2.duration
  */
 export const resolveDateV2 = (entities: builder.IEntity[]) => {
@@ -65,6 +65,11 @@ export const resolveDateV2 = (entities: builder.IEntity[]) => {
     "builtin.datetimeV2.daterange"
   );
 
+  var dateTimeRange: any = builder.EntityRecognizer.findEntity(
+    entities,
+    "builtin.datetimeV2.datetimerange"
+  );
+
   if (dateTime && dateTime.resolution) {
     return dateTime.resolution.values[0].value;
   }
@@ -73,5 +78,9 @@ export const resolveDateV2 = (entities: builder.IEntity[]) => {
   }
   if (daterange && daterange.resolution) {
     return daterange.resolution.values[0].end;
+  }
+
+  if (dateTimeRange && dateTimeRange.resolution) {
+    return dateTimeRange.resolution.values[0].end;
   }
 };
