@@ -32,8 +32,8 @@ export const IgnoreUserDialog: builder.IDialogWaterfallStep[] = [
       const userResponse = await SettingsStore.GetSettingsById(userId, channel);
       const newSettings: ISettings = {
         botMutedUntill: ignoreUntill,
-        channelId: userResponse.channelId,
-        userId: userResponse.userId
+        channelId: channel,
+        userId: userId
       };
 
       const saveResponse = SettingsStore.SaveSettingsById(userId, newSettings);

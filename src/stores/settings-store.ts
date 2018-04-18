@@ -42,8 +42,8 @@ async function SaveSettingsById(id: string, settings: ISettings) {
   const params = `?id=${id}`;
   const url = store.defaults.baseURL + params;
   try {
-    logInfo("PUT", result.status, url);
     var result = await store.put(params, settings);
+    logInfo("PUT", result.status, url);
     return result.data;
   } catch (error) {
     LogHandleAxiosError({ error: error, url: url });
