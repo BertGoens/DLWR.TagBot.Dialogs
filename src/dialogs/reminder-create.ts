@@ -12,12 +12,12 @@ const sendReminder = () => {
 export const ReminderCreateLuisName = "Reminder.Create";
 export const ReminderCreateDialog: builder.IDialogWaterfallStep[] = [
   async function createReminder(session, args, next) {
-    var muteUntillDate: Date = resolveDateV2(args.entities);
+    const muteUntillDate: Date = resolveDateV2(args.entities);
     schedule.scheduleJob(muteUntillDate, sendReminder);
 
-    var text = "I'll remind you ";
+    let text = "I'll remind you ";
     if (datefns.isToday(muteUntillDate)) {
-      var hoursDiff = datefns.differenceInHours(muteUntillDate, new Date());
+      const hoursDiff = datefns.differenceInHours(muteUntillDate, new Date());
       text += "in " + hoursDiff + " hours";
     } else if (datefns.isThisWeek(muteUntillDate)) {
       "this " +
@@ -28,7 +28,7 @@ export const ReminderCreateDialog: builder.IDialogWaterfallStep[] = [
       "on " + datefns.format(muteUntillDate, "YYYY/MM/DD - HH:mm");
     }
 
-    var msg = new builder.Message().text(text);
+    const msg = new builder.Message().text(text);
     session.send(msg);
   }
 ];

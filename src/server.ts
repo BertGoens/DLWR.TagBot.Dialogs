@@ -21,7 +21,7 @@ logInfo("Node version: " + process.version);
 logInfo("NODE_ENV=" + process.env.NODE_ENV);
 
 // Setup Restify Server
-var server = restify.createServer();
+const server = restify.createServer();
 const port = argv.port || process.env.port || process.env.PORT || 3950;
 const addr = argv.addr || process.env.addr || process.env.ADDR || "127.0.0.1";
 
@@ -41,7 +41,7 @@ applyRoutes(server, {
 });
 
 // Create chat connector for communicating with the Bot Framework Service
-var connector = new builder.ChatConnector({
+const connector = new builder.ChatConnector({
   appId: process.env.MICROSOFT_APP_ID,
   appPassword: process.env.MICROSOFT_APP_PASSWORD
 });
@@ -49,7 +49,7 @@ var connector = new builder.ChatConnector({
 // Listen for messages from users
 server.post(apiMessageController, connector.listen());
 
-var bot = new builder.UniversalBot(connector);
+const bot = new builder.UniversalBot(connector);
 bot.set("storage", new builder.MemoryBotStorage());
 
 // Main dialog with LUIS

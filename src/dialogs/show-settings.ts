@@ -6,13 +6,13 @@ import { debuglog } from "util";
 export const ShowSettingsLuisName = "Bot.ShowSettings";
 export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
   async function settingsLookup(session, args, next) {
-    var userId = session.message.user.id;
-    var channelId = session.message.source;
+    const userId = session.message.user.id;
+    const channelId = session.message.source;
 
-    var userSettings: ISettings = {};
+    let userSettings: ISettings = {};
 
     // retrieve the settings by id
-    var createSettings = false;
+    let createSettings = false;
     try {
       userSettings = await SettingsStore.GetSettingsById(userId, channelId);
     } catch (error) {
@@ -31,10 +31,10 @@ export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
       }
     }
 
-    var reply = new builder.Message();
+    let reply = new builder.Message();
 
     if (userSettings) {
-      var text =
+      let text =
         "Your saved settings are:  \n" +
         "User: {0}  \nChannel: {1}  \nBot Muted Until: {2}  \nLast Message Sent: {3}";
       text = text.replace("{0}", userSettings.userId || "Unknown");

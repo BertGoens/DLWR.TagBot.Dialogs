@@ -3,7 +3,7 @@ import * as builder from "botbuilder";
 export const HelpDialogLuisName = "Utilities.Help";
 export const HelpDialog: builder.IDialogWaterfallStep[] = [
   function sendHelpMessage(session, args, next) {
-    var message = new builder.Message()
+    const message = new builder.Message()
       .text(
         "" +
           "### Hi!  \n" +

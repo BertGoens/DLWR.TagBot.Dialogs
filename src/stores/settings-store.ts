@@ -44,7 +44,7 @@ async function SaveSettingsById(
   const params = `?id=${id}`;
   const url = store.defaults.baseURL + params;
   try {
-    var result = await store.put(params, settings);
+    const result = await store.put(params, settings);
     logInfo(result.config.method, result.status, result.config.url);
     return result.data;
   } catch (error) {
@@ -59,7 +59,7 @@ async function CreateSettings(
   const params = "";
   const url = store.defaults.baseURL + params;
   try {
-    var result = await store.post(params, settings);
+    const result = await store.post(params, settings);
     logInfo(result.config.method, result.status, result.config.url);
     return result.data;
   } catch (error) {

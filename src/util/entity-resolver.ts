@@ -50,22 +50,22 @@ export const resolveDocumentAuthor = (authorEntities: builder.IEntity[]) => {
  *  builtin.datetimeV2.duration
  */
 export const resolveDateV2 = (entities: builder.IEntity[]) => {
-  var dateTime: any = builder.EntityRecognizer.findEntity(
+  const dateTime: any = builder.EntityRecognizer.findEntity(
     entities,
     "builtin.datetimeV2.datetime"
   );
 
-  var date: any = builder.EntityRecognizer.findEntity(
+  const date: any = builder.EntityRecognizer.findEntity(
     entities,
     "builtin.datetimeV2.date"
   );
 
-  var daterange: any = builder.EntityRecognizer.findEntity(
+  const daterange: any = builder.EntityRecognizer.findEntity(
     entities,
     "builtin.datetimeV2.daterange"
   );
 
-  var dateTimeRange: any = builder.EntityRecognizer.findEntity(
+  const dateTimeRange: any = builder.EntityRecognizer.findEntity(
     entities,
     "builtin.datetimeV2.datetimerange"
   );

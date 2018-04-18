@@ -9,7 +9,7 @@ import {
 export const SharePointSearchLuisName = "SharePoint.Search";
 export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
   async function sharepointDocumentLookup(session, args, next) {
-    var message = new builder.Message().text(
+    const message = new builder.Message().text(
       "... Looking for untagged documents ... "
     );
     session.send(message);
@@ -37,10 +37,10 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
       )
     };
 
-    var documents = await SharePointStore.GetDocuments(documentFilter);
+    const documents = await SharePointStore.GetDocuments(documentFilter);
 
     // try extracting entities
-    var numberEntity = builder.EntityRecognizer.findEntity(
+    const numberEntity = builder.EntityRecognizer.findEntity(
       args.entities,
       "builtin.number"
     );
@@ -77,13 +77,13 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
     }
   },
   function prepareUser(session, results, next) {
-    var numberToTag = parseInt(results.response);
+    const numberToTag = parseInt(results.response);
 
     if (results.response > 0) {
       // remove excess documents from tag queue
-      var docs: IDocument[] = session.userData.documents;
+      const docs: IDocument[] = session.userData.documents;
       if (docs.length > numberToTag) {
-        var cutExcessNumber = docs.length - numberToTag;
+        const cutExcessNumber = docs.length - numberToTag;
         session.userData.documents.splice(0, cutExcessNumber);
       }
 

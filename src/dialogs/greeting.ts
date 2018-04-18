@@ -15,6 +15,6 @@ export const greetingMessage = session => {
 
 export const GreetingDialog: builder.IDialogWaterfallStep[] = [
   function sendHelpMessage(session, args, next) {
-    var message = session.send(greetingMessage(session));
+    const message = session.send(greetingMessage(session));
   }
 ];

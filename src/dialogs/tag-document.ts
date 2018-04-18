@@ -19,12 +19,12 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
   },
   async function tagDocument(session, results, next) {
     // take tag document
-    var document: IDocument =
+    const document: IDocument =
       session.userData.documents[session.userData.documentsTagged];
 
     session.sendTyping();
     // Get suggested tags
-    var keywords = await KeywordStore.GetKeywords(document.Path);
+    const keywords = await KeywordStore.GetKeywords(document.Path);
     let suggestedTags = [];
     if (keywords && keywords.documents && keywords.documents[0]) {
       suggestedTags = keywords.documents[0].keyPhrases;
@@ -33,16 +33,15 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
     // Do not exceed more then 4 tags (don't bombard the user with suggestions)
     suggestedTags = suggestedTags.slice(0, 4);
 
-    var text = "Some suggested tags:  \n" + suggestedTags.join(",\n");
+    const text = "Some suggested tags:  \n" + suggestedTags.join(",\n");
 
-    var linkToUrl = builder.CardAction.openUrl(
+    const linkToUrl = builder.CardAction.openUrl(
       session,
       document.Path,
       "Open " + document.Title
     );
 
-    var cardMsg = new builder.Message(session);
-    cardMsg.attachments([
+    const cardMsg = new builder.Message(session).attachments([
       new builder.HeroCard(session).title(document.Title).buttons([linkToUrl])
     ]);
 
@@ -84,8 +83,8 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
                 session.endDialog("Ok, let's take a break.");
               }
             }
-            var tagsToAdd = results.response;
-            var msg = new builder.Message()
+            const tagsToAdd = results.response;
+            const msg = new builder.Message()
               .text("Do you want to add these tags: " + tagsToAdd.toString())
               .suggestedActions(
                 builder.SuggestedActions.create(session, [
@@ -122,10 +121,10 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
             );
 
             if (highestScoringIntent.intent == ConfirmLuisName) {
-              var msg = new builder.Message().text(
+              const msg = new builder.Message().text(
                 "Adding these tags: " + session.userData.tagsToAdd
               );
-              var document: IDocument =
+              const document: IDocument =
                 session.userData.documents[session.userData.documentsTagged];
               document.Tags = session.userData.tagsToAdd;
               SharePointStore.SaveDocument(document);
@@ -137,7 +136,7 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
                 highestScoringIntent.intent
               )
             ) {
-              var msg = new builder.Message().text(
+              const msg = new builder.Message().text(
                 "Didn't add the tags" + session.userData.tagsToAdd
               );
               session.send(msg);
