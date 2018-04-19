@@ -6,15 +6,13 @@ require("dotenv-safe").config({
 // command line arguments (overrule .env file)
 const argv = require("minimist")(process.argv.slice(2));
 
-import { logInfo, logSilly, botSubscribeEvents, applyRoutes } from "./util";
-import { format } from "date-fns";
-logSilly("Starting Server", format(Date.now(), "YYYY/MM/DD-HH:mm:ss"));
-
-import { join } from "path";
 import * as builder from "botbuilder";
+import { format } from "date-fns";
+import { join } from "path";
 import * as restify from "restify";
-import * as dialogs from "./dialogs";
-import * as fs from "fs";
+import { applyRoutes, botSubscribeEvents, logInfo, logSilly } from "./util";
+import { applyDialogs } from "./dialogs";
+logSilly("Starting Server", format(Date.now(), "YYYY/MM/DD-HH:mm:ss"));
 
 // log important stuff
 logInfo("Node version: " + process.version);
@@ -57,27 +55,5 @@ export const recognizer = new builder.LuisRecognizer(
   process.env.LUIS_MODEL_URL
 );
 
-bot.dialog(dialogs.TagDocumentName, dialogs.TagDocumentDialog);
-bot.dialog(dialogs.SharePointSearchLuisName, dialogs.SharePointSearchDialog);
-
-export const intentThreshold = 0.4;
-export const intentDialog = new builder.IntentDialog({
-  recognizers: [recognizer],
-  intentThreshold: intentThreshold
-})
-  .matches(dialogs.GreetingLuisName, dialogs.GreetingDialog)
-  .matches(dialogs.SharePointSearchLuisName, dialogs.SharePointSearchDialog)
-  .matches(dialogs.ConfirmLuisName, dialogs.ConfirmDialog)
-  .matches(dialogs.CancelLuisName, dialogs.CancelLuisName)
-  .matches(dialogs.ShowSettingsLuisName, dialogs.ShowSettingsDialog)
-  .matches(dialogs.IgnoreUserLuisName, dialogs.IgnoreUserDialog)
-  .matches(dialogs.UnignoreUserLuisName, dialogs.UnignoreUserialog)
-  .matches(dialogs.HelpDialogLuisName, dialogs.HelpDialog)
-  .matches(dialogs.StopLuisName, dialogs.StopDialog)
-  .matches(dialogs.ReminderCreateLuisName, dialogs.ReminderCreateDialog)
-  .matches(dialogs.NoneLuisName, dialogs.NoneDialog)
-  .onDefault(dialogs.onDefault);
-
-bot.dialog("/", intentDialog);
-
+applyDialogs({ bot: bot, recognizer: recognizer });
 botSubscribeEvents(bot);
