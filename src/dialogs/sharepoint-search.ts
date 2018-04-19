@@ -1,10 +1,14 @@
 import * as builder from "botbuilder";
-import { TagDocumentName } from "./tag-document";
 import { SharePointStore, IDocument, IQueryOptions } from "../stores";
 import {
   resolveDocumentFileType,
   resolveDocumentAuthor
 } from "../util/entity-resolver";
+import {
+  SelectDocumentName,
+  displayChoice,
+  IDisplayChoice
+} from "./select-document";
 
 export const SharePointSearchLuisName = "SharePoint.Search";
 export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
@@ -39,61 +43,34 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 
     const documents = await SharePointStore.GetDocuments(documentFilter);
 
-    // try extracting entities
-    const numberEntity = builder.EntityRecognizer.findEntity(
-      args.entities,
-      "builtin.number"
-    );
-
     // end conversation when nothing untagged
     if (!documents || (documents && documents.length === 0)) {
-      session.send(new builder.Message().text("No untagged documents found."));
+      // TODO: change next workday to take into account the time muted for the bot
+      session.send(
+        new builder.Message().text(
+          "No untagged documents found. " +
+            "I'll contact you the next workday if there is anything to be tagged."
+        )
+      );
       return session.endDialog();
     }
 
     session.userData.documents = documents;
-    if (numberEntity) {
-      // number entity detected, validate
-      if (numberEntity.entity > documents.length) {
-        numberEntity.entity = documents.length;
-      } else if (numberEntity.entity < 0) {
-        numberEntity.entity = 0;
-      }
 
-      session.userData.tagAmount = numberEntity.entity;
-      return next({ response: numberEntity.entity });
-    } else {
-      // no entities detected, ask user for a number
-      builder.Prompts.number(
-        session,
-        `${documents.length} documents found, how many would you like to tag?`,
-        {
-          integerOnly: true,
-          minValue: 0,
-          maxValue: documents.length,
-          maxRetries: 1
-        }
-      );
-    }
-  },
-  function prepareUser(session, results, next) {
-    const numberToTag = parseInt(results.response);
+    builder.Prompts.text(
+      session,
+      documents.length +
+        " documents found with missing requirements, " +
+        "which document would you like to tag?"
+    );
 
-    if (results.response > 0) {
-      // remove excess documents from tag queue
-      const docs: IDocument[] = session.userData.documents;
-      if (docs.length > numberToTag) {
-        const cutExcessNumber = docs.length - numberToTag;
-        session.userData.documents.splice(0, cutExcessNumber);
-      }
+    const dcOptions: IDisplayChoice = {
+      session: session,
+      documents: documents
+    };
+    const msgSelectDocument = displayChoice(dcOptions);
+    session.send(msgSelectDocument);
 
-      session.userData.documentsTagged = 0;
-      session.userData.documentsToTag = numberToTag;
-      session.replaceDialog(TagDocumentName);
-    } else {
-      // End
-      session.endDialog(new builder.Message().text("Done tagging for today"));
-      return;
-    }
+    session.beginDialog(SelectDocumentName);
   }
 ];

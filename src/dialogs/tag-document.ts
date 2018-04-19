@@ -1,11 +1,17 @@
 import { IDocument, KeywordStore, SharePointStore } from "../stores";
 import * as builder from "botbuilder";
-import { recognizer, intentThreshold } from "../server";
+import { recognizer } from "../server";
 import { logSilly, logInfo } from "../util";
-import { NoneLuisName, CancelLuisName, StopLuisName, ConfirmLuisName } from ".";
+import {
+  NoneLuisName,
+  CancelLuisName,
+  StopLuisName,
+  ConfirmLuisName,
+  intentThreshold
+} from ".";
 import { debuglog } from "util";
 
-export const TagDocumentName = "TagDocument";
+export const TagDocumentName = "/TagDocument";
 export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
   function selectDocument(session, results, next) {
     if (session.userData.documentsTagged >= session.userData.documentsToTag) {
@@ -91,8 +97,8 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
               .text("Do you want to add these tags: " + tagsToAdd.toString())
               .suggestedActions(
                 builder.SuggestedActions.create(session, [
-                  builder.CardAction.imBack(session, "Yes", "👍"),
-                  builder.CardAction.imBack(session, "No", "👎")
+                  builder.CardAction.imBack(session, "Yes", "ðŸ‘"),
+                  builder.CardAction.imBack(session, "No", "ðŸ‘Ž")
                 ])
               );
             session.userData.tagsToAdd = tagsToAdd;
