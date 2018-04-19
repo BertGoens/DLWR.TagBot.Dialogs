@@ -71,7 +71,7 @@ export const applyDialogs = (options: IApplyDialogOptions) => {
     .matches(NoneLuisName, NoneDialog)
     .onDefault(onDefault);
 
-  options.bot.dialog(DefaultDialogName, intentDialog);
-  options.bot.dialog(TagDocumentName, TagDocumentDialog);
-  options.bot.dialog(SelectDocumentName, SelectDocumentDialog);
+  options.bot.library("*").dialog(SelectDocumentName, SelectDocumentDialog);
+  options.bot.library("*").dialog(TagDocumentName, TagDocumentDialog);
+  options.bot.library("*").dialog(DefaultDialogName, intentDialog);
 };

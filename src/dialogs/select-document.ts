@@ -13,7 +13,7 @@ import {
   ShowPreviousLuisName,
   ConfirmLuisName
 } from ".";
-import { logInfo } from "../util";
+import { logInfo, logSilly } from "../util";
 
 export const SelectDocumentName = "/SelectDocument";
 
@@ -24,7 +24,7 @@ export interface IDisplayChoice {
   requestedViewIndex?: number;
 }
 
-export const displayChoice = (options: IDisplayChoice) => {
+const buildChoiceMessage = (options: IDisplayChoice) => {
   // display 5 choices
   const documents: IDocument[] = options.documents;
 
@@ -70,8 +70,16 @@ export const displayChoice = (options: IDisplayChoice) => {
 };
 
 export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
+  function displayChoice(session, results, next) {
+    const dcOptions: IDisplayChoice = {
+      session: session,
+      documents: session.userData.documents
+    };
+    const msgSelectDocument = buildChoiceMessage(dcOptions);
+    //session.send(msgSelectDocument);
+    builder.Prompts.text(session, msgSelectDocument);
+  },
   function validateChoice(session, results, next) {
-    logInfo("Validate Choice");
     if (results && results.response) {
       // Step 1
       // Response Matches: Select document ${number}
@@ -80,7 +88,7 @@ export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
         const numbersOnly = /\d+/;
         const selectedDocument: number = results.response.match(numbersOnly);
         session.userData.selectedDocumentIndex = selectedDocument;
-        session.beginDialog(TagDocumentName);
+        session.beginDialog("*:" + TagDocumentName);
       }
 
       // Step 2
@@ -91,21 +99,22 @@ export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
         (err, intents, entities) => {
           if (intents) {
             const bestIntent = sortIntentsByScore(intents)[0];
-
+            logSilly(`Best intent: ${bestIntent.intent}, Score: ${bestIntent.score}`);
             if ([CancelLuisName, StopLuisName].includes(bestIntent.intent)) {
               session.endConversation();
             }
 
             if (ShowNextLuisName === bestIntent.intent) {
-              const index = session.userData.documentSelectIndex;
-              if (index > -1) session.userData.documentSelectIndex--;
-              session.replaceDialog(SelectDocumentName);
+              const newIndex = session.userData.documentSelectIndex + 1;
+              session.replaceDialog(SelectDocumentName, {
+                requestedViewIndex: newIndex
+              });
             }
 
             if (ShowPreviousLuisName === bestIntent.intent) {
-              const newIndex = (session.userData.documentSelectIndex = 1);
+              const newIndex = session.userData.documentSelectIndex - 1;
               session.replaceDialog(SelectDocumentName, {
-                newDocumentSelectIndex: newIndex
+                requestedViewIndex: newIndex
               });
             }
           }
