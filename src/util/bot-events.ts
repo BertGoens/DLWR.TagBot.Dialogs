@@ -2,8 +2,9 @@ import * as builder from "botbuilder";
 import { SettingsStore, ISettings } from "../stores";
 import * as datefns from "date-fns";
 import { greetingMessage } from "../dialogs";
+import { logSilly, logError } from ".";
 
-export const botSubscribeEvents = (bot: any) => {
+export const botSubscribeEvents = (bot: builder.UniversalBot) => {
   bot.on("contactRelationUpdate", function(message) {
     if (message.action === "add") {
       const name = message.user ? message.user.name : null;
@@ -32,18 +33,25 @@ export const botSubscribeEvents = (bot: any) => {
           //   delete the address.conversation field from the cloned address.
           const address = Object.create(message.address);
           address.user = identity;
-          updateUser(identity.id, message.source);
-          const reply = new builder.Message()
-            .address(address)
-            .text("Hello %s", identity.name || "there");
-          bot.send(reply);
+          updateUser(identity.id, message.source)
+            .then(() => {
+              const reply = new builder.Message()
+                .address(address)
+                .text("Hello %s", identity.name || "there");
+              bot.send(reply);
+            })
+            .catch(err => {
+              logError(
+                `Error occured on conversationUpdate: ${err && err.message}`
+              );
+            });
         }
       });
     }
   });
 
   const updateUser = async (userId, channelId) => {
-    // lookup to see if the user exists
+    logSilly(`User joined conversation: ${userId} trough ${channelId}`);
 
     try {
       let settings = await SettingsStore.GetSettingsById(userId, channelId);
@@ -51,7 +59,7 @@ export const botSubscribeEvents = (bot: any) => {
       const result = await SettingsStore.SaveSettingsById(userId, settings);
       return;
     } catch (error) {
-      // user doesn't exist
+      logSilly(`User ${userId} on ${channelId} not found, creating now.`);
     }
 
     // user doesn't exist, try to create
@@ -60,12 +68,12 @@ export const botSubscribeEvents = (bot: any) => {
         botMutedUntill: null,
         channelId: channelId,
         userId: userId,
-        lastMessageSent: new Date(Date.now())
+        lastMessageSent: datefns.addDays(Date.now(), 0)
       };
 
-      await SettingsStore.CreateSettings(userId, settings);
+      const reply = await SettingsStore.CreateSettings(userId, settings);
     } catch (error) {
-      // something went wrong
+      logSilly(`User ${userId} on ${channelId} coudn't be created.`);
     }
   };
 };
