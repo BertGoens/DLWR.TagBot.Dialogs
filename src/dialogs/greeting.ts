@@ -7,7 +7,7 @@ export const greetingMessage = session => {
     .text("Hi, let's tag some documents!")
     .suggestedActions(
       builder.SuggestedActions.create(session, [
-        builder.CardAction.imBack(session, "Search for 1 document", "👍"),
+        builder.CardAction.imBack(session, "Search for documents", "👍"),
         builder.CardAction.imBack(session, "Quit", "👎")
       ])
     );
