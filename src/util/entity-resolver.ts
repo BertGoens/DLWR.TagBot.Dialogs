@@ -84,3 +84,13 @@ export const resolveDateV2 = (entities: builder.IEntity[]) => {
     return dateTimeRange.resolution.values[0].end;
   }
 };
+
+/**
+ * Sort the array of intent with the highest scores first
+ */
+export const sortIntentsByScore = (intents: builder.IIntent[]) => {
+  let sorted = intents.sort((a, b) => {
+    return b.score - a.score;
+  });
+  return sorted;
+};
