@@ -1,9 +1,9 @@
-import * as builder from "botbuilder";
+import * as builder from 'botbuilder'
 
-export const StopLuisName = "Utilities.Stop";
+export const StopLuisName = 'Utilities.Stop'
 
 export const StopDialog: builder.IDialogWaterfallStep[] = [
-  function handleConfirmationMessage(session, args, next) {
-    session.endDialog();
-  }
-];
+	function handleConfirmationMessage(session, args, next) {
+		session.endDialog()
+	},
+]

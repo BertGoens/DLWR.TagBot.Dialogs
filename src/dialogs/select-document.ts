@@ -1,125 +1,119 @@
-import * as builder from "botbuilder";
-import { TagDocumentName } from "./tag-document";
-import { SharePointStore, IDocument, IQueryOptions } from "../stores";
+import * as builder from 'botbuilder'
+import { TagDocumentName } from './tag-document'
+import { SharePointStore, IDocument, IQueryOptions } from '../stores'
 import {
-  resolveDocumentFileType,
-  resolveDocumentAuthor,
-  sortIntentsByScore
-} from "../util/entity-resolver";
+	resolveDocumentFileType,
+	resolveDocumentAuthor,
+	sortIntentsByScore,
+} from '../util/entity-resolver'
 import {
-  CancelLuisName,
-  StopLuisName,
-  ShowNextLuisName,
-  ShowPreviousLuisName,
-  ConfirmLuisName
-} from ".";
-import { logInfo, logSilly } from "../util";
+	CancelLuisName,
+	StopLuisName,
+	ShowNextLuisName,
+	ShowPreviousLuisName,
+	ConfirmLuisName,
+} from '.'
+import { logInfo, logSilly } from '../util'
 
-export const SelectDocumentName = "/SelectDocument";
+export const SelectDocumentName = '/SelectDocument'
 
 export interface IDisplayChoice {
-  session: builder.Session;
-  documents: IDocument[];
-  currentViewIndex?: number;
-  requestedViewIndex?: number;
+	session: builder.Session
+	documents: IDocument[]
+	currentViewIndex?: number
+	requestedViewIndex?: number
 }
 
 const buildChoiceMessage = (options: IDisplayChoice) => {
-  // display 5 choices
-  const documents: IDocument[] = options.documents;
+	// display 5 choices
+	const documents: IDocument[] = options.documents
 
-  const pagerSize = 4; // ZERO BASED
-  if (options.requestedViewIndex) {
-    // Calculate new lowerbound
-    const requestedViewIndex = options.requestedViewIndex * (pagerSize + 1);
-    // Check if lowerbound is in range
-    if (options.documents.length > requestedViewIndex) {
-      // In range, raise our currentViewIndex:
-      options.currentViewIndex = options.requestedViewIndex;
-    }
-  }
+	const pagerSize = 4 // ZERO BASED
+	if (options.requestedViewIndex) {
+		// Calculate new lowerbound
+		const requestedViewIndex = options.requestedViewIndex * (pagerSize + 1)
+		// Check if lowerbound is in range
+		if (options.documents.length > requestedViewIndex) {
+			// In range, raise our currentViewIndex:
+			options.currentViewIndex = options.requestedViewIndex
+		}
+	}
 
-  const index = options.currentViewIndex || 0;
-  const lowerBound = index * 4;
-  const upperBound = lowerBound + pagerSize;
+	const index = options.currentViewIndex || 0
+	const lowerBound = index * 4
+	const upperBound = lowerBound + pagerSize
 
-  const thumbnailCards = documents
-    .slice(lowerBound, upperBound)
-    .map((myDocument, idx, arr) => {
-      const fileLink = builder.CardAction.openUrl(
-        options.session,
-        myDocument.Path,
-        "Open file"
-      );
+	const thumbnailCards = documents.slice(lowerBound, upperBound).map((myDocument, idx, arr) => {
+		const fileLink = builder.CardAction.openUrl(options.session, myDocument.Path, 'Open file')
 
-      const selectFile = builder.CardAction.imBack(
-        options.session,
-        "Select document " + idx,
-        "Select"
-      );
+		const selectFile = builder.CardAction.imBack(
+			options.session,
+			'Select document ' + idx,
+			'Select'
+		)
 
-      return new builder.ThumbnailCard(options.session)
-        .title(myDocument.Title)
-        .buttons([fileLink, selectFile])
-        .subtitle("Author: ", myDocument.Author);
-    });
+		return new builder.ThumbnailCard(options.session)
+			.title(myDocument.Title)
+			.buttons([fileLink, selectFile])
+			.subtitle('Author: ', myDocument.Author)
+	})
 
-  const msg = new builder.Message(options.session).attachments(thumbnailCards);
+	const msg = new builder.Message(options.session).attachments(thumbnailCards)
 
-  return msg;
-};
+	return msg
+}
 
 export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
-  function displayChoice(session, results, next) {
-    const dcOptions: IDisplayChoice = {
-      session: session,
-      documents: session.userData.documents
-    };
-    const msgSelectDocument = buildChoiceMessage(dcOptions);
-    //session.send(msgSelectDocument);
-    builder.Prompts.text(session, msgSelectDocument);
-  },
-  function validateChoice(session, results, next) {
-    if (results && results.response) {
-      // Step 1
-      // Response Matches: Select document ${number}
-      const regexp = /Select document \d/gi;
-      if (results.response.match(regexp)) {
-        const numbersOnly = /\d+/;
-        const selectedDocument: number = results.response.match(numbersOnly);
-        session.userData.selectedDocumentIndex = selectedDocument;
-        session.beginDialog("*:" + TagDocumentName);
-      }
+	function displayChoice(session, results, next) {
+		const dcOptions: IDisplayChoice = {
+			session: session,
+			documents: session.userData.documents,
+		}
+		const msgSelectDocument = buildChoiceMessage(dcOptions)
+		//session.send(msgSelectDocument);
+		builder.Prompts.text(session, msgSelectDocument)
+	},
+	function validateChoice(session, results, next) {
+		if (results && results.response) {
+			// Step 1
+			// Response Matches: Select document ${number}
+			const regexp = /Select document \d/gi
+			if (results.response.match(regexp)) {
+				const numbersOnly = /\d+/
+				const selectedDocument: number = results.response.match(numbersOnly)
+				session.userData.selectedDocumentIndex = selectedDocument
+				session.beginDialog('*:' + TagDocumentName)
+			}
 
-      // Step 2
-      // Decide on next action
-      builder.LuisRecognizer.recognize(
-        results.response,
-        process.env.LUIS_MODEL_URL,
-        (err, intents, entities) => {
-          if (intents) {
-            const bestIntent = sortIntentsByScore(intents)[0];
-            logSilly(`Best intent: ${bestIntent.intent}, Score: ${bestIntent.score}`);
-            if ([CancelLuisName, StopLuisName].includes(bestIntent.intent)) {
-              session.endConversation();
-            }
+			// Step 2
+			// Decide on next action
+			builder.LuisRecognizer.recognize(
+				results.response,
+				process.env.LUIS_MODEL_URL,
+				(err, intents, entities) => {
+					if (intents) {
+						const bestIntent = sortIntentsByScore(intents)[0]
+						logSilly(`Best intent: ${bestIntent.intent}, Score: ${bestIntent.score}`)
+						if ([CancelLuisName, StopLuisName].includes(bestIntent.intent)) {
+							session.endConversation()
+						}
 
-            if (ShowNextLuisName === bestIntent.intent) {
-              const newIndex = session.userData.documentSelectIndex + 1;
-              session.replaceDialog(SelectDocumentName, {
-                requestedViewIndex: newIndex
-              });
-            }
+						if (ShowNextLuisName === bestIntent.intent) {
+							const newIndex = session.userData.documentSelectIndex + 1
+							session.replaceDialog(SelectDocumentName, {
+								requestedViewIndex: newIndex,
+							})
+						}
 
-            if (ShowPreviousLuisName === bestIntent.intent) {
-              const newIndex = session.userData.documentSelectIndex - 1;
-              session.replaceDialog(SelectDocumentName, {
-                requestedViewIndex: newIndex
-              });
-            }
-          }
-        }
-      );
-    }
-  }
-];
+						if (ShowPreviousLuisName === bestIntent.intent) {
+							const newIndex = session.userData.documentSelectIndex - 1
+							session.replaceDialog(SelectDocumentName, {
+								requestedViewIndex: newIndex,
+							})
+						}
+					}
+				}
+			)
+		}
+	},
+]
