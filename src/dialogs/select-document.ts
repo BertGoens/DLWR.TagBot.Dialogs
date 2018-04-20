@@ -12,8 +12,10 @@ import {
 	ShowNextLuisName,
 	ShowPreviousLuisName,
 	ConfirmLuisName,
+	intentThreshold,
 } from '.'
 import { logInfo, logSilly } from '../util'
+import { Pager, IPagerOptions } from '../util/pager'
 
 export const SelectDocumentName = '/SelectDocument'
 
@@ -27,28 +29,20 @@ export interface IDisplayChoice {
 const buildChoiceMessage = (options: IDisplayChoice) => {
 	// display 5 choices
 	const documents: IDocument[] = options.documents
-
 	const pagerSize = 4 // ZERO BASED
-	if (options.requestedViewIndex) {
-		// Calculate new lowerbound
-		const requestedViewIndex = options.requestedViewIndex * (pagerSize + 1)
-		// Check if lowerbound is in range
-		if (options.documents.length > requestedViewIndex) {
-			// In range, raise our currentViewIndex:
-			options.currentViewIndex = options.requestedViewIndex
-		}
-	}
 
-	const index = options.currentViewIndex || 0
-	const lowerBound = index * 4
-	const upperBound = lowerBound + pagerSize
+	const myPage = Pager().TakePage({
+		documents: options.documents,
+		pageSize: pagerSize,
+		requestedPage: options.requestedViewIndex,
+	})
 
-	const thumbnailCards = documents.slice(lowerBound, upperBound).map((myDocument, idx, arr) => {
+	const thumbnailCards = myPage.documents.map((myDocument: IDocument) => {
 		const fileLink = builder.CardAction.openUrl(options.session, myDocument.Path, 'Open file')
 
 		const selectFile = builder.CardAction.imBack(
 			options.session,
-			'Select document ' + idx,
+			'Select document ' + documents.indexOf(myDocument),
 			'Select'
 		)
 
@@ -60,7 +54,21 @@ const buildChoiceMessage = (options: IDisplayChoice) => {
 
 	const msg = new builder.Message(options.session).attachments(thumbnailCards)
 
-	return msg
+	const nextPageIM = builder.CardAction.imBack(options.session, 'Next page', 'Next page')
+	const previousIM = builder.CardAction.imBack(options.session, 'Previous page', 'Previous page')
+
+	const suggestions = []
+	if (myPage.previousPagePossible) {
+		suggestions.push(previousIM)
+	}
+	if (myPage.nextPagePossible) {
+		suggestions.push(nextPageIM)
+	}
+	if (suggestions.length > 0) {
+		msg.suggestedActions(builder.SuggestedActions.create(options.session, suggestions))
+	}
+
+	return { message: msg, viewIndex: myPage.page }
 }
 
 export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
@@ -68,10 +76,13 @@ export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
 		const dcOptions: IDisplayChoice = {
 			session: session,
 			documents: session.userData.documents,
+			currentViewIndex: session.userData.currentViewIndex,
+			requestedViewIndex: results.requestedViewIndex,
 		}
 		const msgSelectDocument = buildChoiceMessage(dcOptions)
-		//session.send(msgSelectDocument);
-		builder.Prompts.text(session, msgSelectDocument)
+		logSilly(`Page ${msgSelectDocument.viewIndex}`)
+		session.userData.currentViewIndex = msgSelectDocument.viewIndex
+		builder.Prompts.text(session, msgSelectDocument.message)
 	},
 	function validateChoice(session, results, next) {
 		if (results && results.response) {
@@ -83,6 +94,7 @@ export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
 				const selectedDocument: number = results.response.match(numbersOnly)
 				session.userData.selectedDocumentIndex = selectedDocument
 				session.beginDialog('*:' + TagDocumentName)
+				return
 			}
 
 			// Step 2
@@ -94,19 +106,26 @@ export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
 					if (intents) {
 						const bestIntent = sortIntentsByScore(intents)[0]
 						logSilly(`Best intent: ${bestIntent.intent}, Score: ${bestIntent.score}`)
+						if (bestIntent.score < intentThreshold) {
+							session.send('Sorry, I did not quite catch that.')
+							next()
+						}
+
 						if ([CancelLuisName, StopLuisName].includes(bestIntent.intent)) {
 							session.endConversation()
 						}
 
 						if (ShowNextLuisName === bestIntent.intent) {
-							const newIndex = session.userData.documentSelectIndex + 1
+							const currentIndex = session.userData.currentViewIndex || 0
+							const newIndex = currentIndex + 1
 							session.replaceDialog(SelectDocumentName, {
 								requestedViewIndex: newIndex,
 							})
 						}
 
 						if (ShowPreviousLuisName === bestIntent.intent) {
-							const newIndex = session.userData.documentSelectIndex - 1
+							const currentIndex = session.userData.currentViewIndex || 0
+							const newIndex = currentIndex - 1
 							session.replaceDialog(SelectDocumentName, {
 								requestedViewIndex: newIndex,
 							})
