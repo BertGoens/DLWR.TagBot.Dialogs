@@ -9,10 +9,12 @@ const argv = require("minimist")(process.argv.slice(2));
 import * as builder from "botbuilder";
 import { format } from "date-fns";
 import { join } from "path";
+import {hostname, platform} from "os"
 import * as restify from "restify";
 import { applyRoutes, botSubscribeEvents, logInfo, logSilly } from "./util";
 import { applyDialogs } from "./dialogs";
 logSilly("Starting Server", format(Date.now(), "YYYY/MM/DD-HH:mm:ss"));
+logSilly(`Server hostname: ${hostname()}, platform: ${platform()}`)
 
 // log important stuff
 logInfo("Node version: " + process.version);
