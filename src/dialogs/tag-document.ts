@@ -80,8 +80,8 @@ export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [
 							.text('Do you want to add these tags: ' + tagsToAdd.toString())
 							.suggestedActions(
 								builder.SuggestedActions.create(session, [
-									builder.CardAction.imBack(session, 'Yes', 'ðŸ‘'),
-									builder.CardAction.imBack(session, 'No', 'ðŸ‘Ž'),
+									builder.CardAction.imBack(session, 'Yes', '👍'),
+									builder.CardAction.imBack(session, 'No', '👎'),
 								])
 							)
 						session.userData.tagsToAdd = tagsToAdd
