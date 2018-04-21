@@ -42,14 +42,14 @@ const buildChoiceMessage = (options: IDisplayChoice) => {
 
 		const selectFile = builder.CardAction.imBack(
 			options.session,
-			'Select document ' + documents.indexOf(myDocument),
+			`Select document ${documents.indexOf(myDocument)}`,
 			'Select'
 		)
 
 		return new builder.ThumbnailCard(options.session)
 			.title(myDocument.Title)
 			.buttons([fileLink, selectFile])
-			.subtitle('Author: ', myDocument.Author)
+			.subtitle(`Author: ${myDocument.Author}`)
 	})
 
 	const msg = new builder.Message(options.session).attachments(thumbnailCards)
@@ -91,10 +91,10 @@ export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
 			const regexp = /Select document \d/gi
 			if (results.response.match(regexp)) {
 				const numbersOnly = /\d+/
-				const selectedDocument: number = results.response.match(numbersOnly)
-				session.userData.selectedDocumentIndex = selectedDocument
-				session.beginDialog('*:' + TagDocumentName)
-				return
+				const selectedDocumentIndex: number = results.response.match(numbersOnly)
+				const selectedDocument = session.userData.documents
+				session.userData.selectedDocument = selectedDocument
+				session.beginDialog('*:' + TagDocumentName, { document: selectedDocument })
 			}
 
 			// Step 2
