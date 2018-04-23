@@ -6,6 +6,7 @@ import {
 	HelpLuisName,
 	ShowNextLuisName,
 	ShowPreviousLuisName,
+	ConfirmLuisName,
 } from '../constants'
 import { BeginAction } from './display-tags'
 import { StopIntent } from './stop'
@@ -13,6 +14,7 @@ import { HelpIntent } from './help'
 import { NextPageIntent } from './show-next'
 import { PreviousPageIntent } from './show-previous'
 import { SelectTagRegex } from './select-tag'
+import { ConfirmIntent } from './confirm-tags'
 
 export const TagDocumentDialogId = '/tag-document'
 
@@ -22,7 +24,8 @@ export const TagDocumentDialog = (recognizer) => {
 		intentThreshold: intentThreshold,
 	})
 		.onBegin(BeginAction)
-		.matches(/Select tag \d/gi, SelectTagRegex)
+		.matches(/Add tag ["']/gi, SelectTagRegex)
+		.matches(ConfirmLuisName, ConfirmIntent)
 		.matches(ShowPreviousLuisName, PreviousPageIntent)
 		.matches(ShowNextLuisName, NextPageIntent)
 		.matchesAny([StopLuisName, CancelLuisName], StopIntent)

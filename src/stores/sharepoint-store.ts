@@ -20,6 +20,7 @@ export interface IDocument {
 	Path: string
 	Author: string
 	MissingProperties: string
+	AvailableTags: string[]
 }
 
 export interface IQueryOptions {

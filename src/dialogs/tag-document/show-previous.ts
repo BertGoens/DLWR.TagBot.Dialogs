@@ -10,11 +10,8 @@ export const PreviousPageIntent: builder.IDialogWaterfallStep[] = [
 			session: session,
 			currentViewIndex: session.dialogData.currentViewIndex,
 			requestedViewIndex: newIndex,
-			document: session.dialogData.selectedDocument,
-			tagList: {
-				availableTags: session.dialogData.selectedDocumentAvailableTags,
-				generatedTags: session.dialogData.selectedDocumentGeneratedTags,
-			},
+			document: session.dialogData.document,
+			generatedTags: session.dialogData.generatedTags,
 		}
 		const msgSelectDocument = DispayTagsMsg(options)
 

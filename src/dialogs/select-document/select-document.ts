@@ -1,5 +1,6 @@
 import * as builder from 'botbuilder'
-import { TagDocumentName } from '../tag-document/tag-document'
+import { TagDocumentDialogId } from '../tag-document/index'
+import { LibraryId } from '../index'
 
 export const SelectDocumentsRegex: builder.IDialogWaterfallStep[] = [
 	function validateSelection(session, results, next) {
@@ -7,6 +8,6 @@ export const SelectDocumentsRegex: builder.IDialogWaterfallStep[] = [
 		const selectedDocumentIndex = results.matched.input.match(numbersOnly)
 		const selectedDocument = session.userData.documents[selectedDocumentIndex[0]]
 		session.userData.selectedDocument = selectedDocument
-		session.beginDialog('*:' + TagDocumentName, { document: selectedDocument })
+		session.beginDialog(`${LibraryId}:${TagDocumentDialogId}`, { document: selectedDocument })
 	},
 ]

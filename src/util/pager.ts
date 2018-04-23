@@ -30,9 +30,13 @@ export const Pager = () => {
 		const nextPage = Pager().IsPagePossible(nextPageOptions)
 		const prevPage = Pager().IsPagePossible(previousPageOptions)
 
+		const pagesRounded = options.documents.length / options.pageSize
+		const countPages = Math.ceil(pagesRounded)
+
 		return {
 			documents: results,
 			page: index,
+			pageTotal: countPages,
 			nextPagePossible: nextPage,
 			previousPagePossible: prevPage,
 		}
