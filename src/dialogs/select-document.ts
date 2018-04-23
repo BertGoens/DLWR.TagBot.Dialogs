@@ -13,6 +13,7 @@ import {
 	ShowPreviousLuisName,
 	ConfirmLuisName,
 	intentThreshold,
+	NoneLuisName,
 } from '.'
 import { logInfo, logSilly } from '../util'
 import { Pager, IPagerOptions } from '../util/pager'
@@ -39,7 +40,6 @@ const buildChoiceMessage = (options: IDisplayChoice) => {
 
 	const thumbnailCards = myPage.documents.map((myDocument: IDocument) => {
 		const fileLink = builder.CardAction.openUrl(options.session, myDocument.Path, 'Open file')
-
 		const selectFile = builder.CardAction.imBack(
 			options.session,
 			`Select document ${documents.indexOf(myDocument)}`,
@@ -50,6 +50,7 @@ const buildChoiceMessage = (options: IDisplayChoice) => {
 			.title(myDocument.Title)
 			.buttons([fileLink, selectFile])
 			.subtitle(`Author: ${myDocument.Author}`)
+			.text(`Missing: ${myDocument.MissingProperties}`)
 	})
 
 	const msg = new builder.Message(options.session).attachments(thumbnailCards)
@@ -91,8 +92,8 @@ export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
 			const regexp = /Select document \d/gi
 			if (results.response.match(regexp)) {
 				const numbersOnly = /\d+/
-				const selectedDocumentIndex: number = results.response.match(numbersOnly)
-				const selectedDocument = session.userData.documents
+				const selectedDocumentIndex = results.response.match(numbersOnly)
+				const selectedDocument = session.userData.documents[selectedDocumentIndex[0]]
 				session.userData.selectedDocument = selectedDocument
 				session.beginDialog('*:' + TagDocumentName, { document: selectedDocument })
 			}
@@ -106,9 +107,16 @@ export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
 					if (intents) {
 						const bestIntent = sortIntentsByScore(intents)[0]
 						logSilly(`Best intent: ${bestIntent.intent}, Score: ${bestIntent.score}`)
+
+						const defaultAction = () => {
+							session.send('Sorry, I did not quite catch that, please select a document.')
+							session.replaceDialog(SelectDocumentName, {
+								requestedViewIndex: session.userData.currentViewIndex,
+							})
+						}
+
 						if (bestIntent.score < intentThreshold) {
-							session.send('Sorry, I did not quite catch that.')
-							next()
+							defaultAction()
 						}
 
 						if ([CancelLuisName, StopLuisName].includes(bestIntent.intent)) {
@@ -129,6 +137,16 @@ export const SelectDocumentDialog: builder.IDialogWaterfallStep[] = [
 							session.replaceDialog(SelectDocumentName, {
 								requestedViewIndex: newIndex,
 							})
+						}
+
+						const handledIntents = [
+							CancelLuisName,
+							StopLuisName,
+							ShowNextLuisName,
+							ShowPreviousLuisName,
+						]
+						if (!handledIntents.includes(bestIntent.intent)) {
+							defaultAction()
 						}
 					}
 				}

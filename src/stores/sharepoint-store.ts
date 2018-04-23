@@ -19,7 +19,7 @@ export interface IDocument {
 	Tags: string[]
 	Path: string
 	Author: string
-	ListItemID: number
+	MissingProperties: string
 }
 
 export interface IQueryOptions {
