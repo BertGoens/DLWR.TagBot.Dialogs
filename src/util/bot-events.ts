@@ -1,7 +1,6 @@
 import * as builder from 'botbuilder'
 import { SettingsStore, ISettings } from '../stores'
 import * as datefns from 'date-fns'
-import { greetingMessage } from '../dialogs'
 import { logSilly, logError } from '.'
 
 export const botSubscribeEvents = (bot: builder.UniversalBot) => {
@@ -21,8 +20,6 @@ export const botSubscribeEvents = (bot: builder.UniversalBot) => {
 				if (identity.id === message.address.bot.id) {
 					// Bot is joining conversation
 					// - For WebChat channel you'll get this on page load.
-					const reply = greetingMessage(null)
-					bot.send(reply)
 				} else {
 					// User is joining conversation
 					// - For WebChat channel this will be sent when user sends first message.

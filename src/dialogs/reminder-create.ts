@@ -9,7 +9,6 @@ const sendReminder = () => {
 	// send reminder to user
 }
 
-export const ReminderCreateLuisName = 'Reminder.Create'
 export const ReminderCreateDialog: builder.IDialogWaterfallStep[] = [
 	async function createReminder(session, args, next) {
 		const muteUntillDate: Date = resolveDateV2(args.entities)

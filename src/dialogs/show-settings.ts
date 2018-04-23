@@ -3,7 +3,6 @@ import { SettingsStore, ISettings } from '../stores'
 import { logError, logDebug } from '../util'
 import { debuglog } from 'util'
 
-export const ShowSettingsLuisName = 'Bot.ShowSettings'
 export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
 	async function settingsLookup(session, args, next) {
 		const userId = session.message.user.id

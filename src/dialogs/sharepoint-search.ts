@@ -1,7 +1,7 @@
 import * as builder from 'botbuilder'
 import { IQueryOptions, SharePointStore } from '../stores'
 import { resolveDocumentAuthor, resolveDocumentFileType } from '../util/entity-resolver'
-import { SelectDocumentName } from './select-document'
+import { SelectDocumentDialogId } from './select-document/index'
 
 export const SharePointSearchLuisName = 'SharePoint.Search'
 export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
@@ -45,6 +45,7 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 				'which document would you like to tag?'
 		)
 
-		session.beginDialog('*:' + SelectDocumentName, {})
+		session.beginDialog(`*:${SelectDocumentDialogId}`)
+		//session.beginDialog('*:' + SelectDocumentName, {})
 	},
 ]

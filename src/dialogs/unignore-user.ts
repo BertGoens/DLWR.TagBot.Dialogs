@@ -1,7 +1,6 @@
 import * as builder from 'botbuilder'
 import { ISettings, SettingsStore } from '../stores'
 
-export const UnignoreUserLuisName = 'UnignoreUser'
 export const UnignoreUserialog: builder.IDialogWaterfallStep[] = [
 	async function sendIgnoreMessage(session, args, next) {
 		const message = new builder.Message().text("I'll send you again if there are any missing tags")

@@ -3,7 +3,6 @@ import * as datefns from 'date-fns'
 import { SettingsStore, ISettings } from '../stores'
 import { resolveDateV2 } from '../util/entity-resolver'
 
-export const IgnoreUserLuisName = 'IgnoreUser'
 export const IgnoreUserDialog: builder.IDialogWaterfallStep[] = [
 	async function sendIgnoreMessage(session, args, next) {
 		// try extracting entities

@@ -1,8 +1,6 @@
 import * as builder from 'botbuilder'
 
-export const GreetingLuisName = 'Utilities.Greeting'
-
-export const greetingMessage = (session) => {
+const greetingMessage = (session) => {
 	return new builder.Message()
 		.text("Hi, let's tag some documents!")
 		.suggestedActions(

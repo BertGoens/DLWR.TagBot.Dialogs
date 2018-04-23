@@ -1,6 +1,5 @@
 import * as builder from 'botbuilder'
 
-export const HelpDialogLuisName = 'Utilities.Help'
 export const HelpDialog: builder.IDialogWaterfallStep[] = [
 	function sendHelpMessage(session, args, next) {
 		const message = new builder.Message()
