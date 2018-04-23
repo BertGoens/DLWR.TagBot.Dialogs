@@ -1,11 +1,11 @@
 import { bot } from '../server'
-import { DefaultDialogName } from './constants'
-import { DefaultDialog } from './default'
+import { DefaultDialog, DefaultDialogId } from './default'
 import { SelectDocumentDialogId, SelectDocumentIntentDialog } from './select-document/index'
 import { TagDocumentDialog, TagDocumentName } from './tag-document/tag-document'
 
+export const LibraryId = '*'
 export const applyDialogs = () => {
-	bot.library('*').dialog(DefaultDialogName, DefaultDialog)
-	bot.library('*').dialog(SelectDocumentDialogId, SelectDocumentIntentDialog)
-	bot.library('*').dialog(TagDocumentName, TagDocumentDialog)
+	bot.library(LibraryId).dialog(DefaultDialogId, DefaultDialog)
+	bot.library(LibraryId).dialog(SelectDocumentDialogId, SelectDocumentIntentDialog)
+	bot.library(LibraryId).dialog(TagDocumentName, TagDocumentDialog)
 }

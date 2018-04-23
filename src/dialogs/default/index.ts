@@ -12,7 +12,6 @@ import {
 	UnignoreUserLuisName,
 	HelpLuisName,
 	intentThreshold,
-	DefaultDialogName,
 } from '../constants'
 
 import { GreetingDialog } from './greeting'
@@ -25,6 +24,11 @@ import { ShowSettingsDialog } from './show-settings'
 import { ReminderCreateDialog } from './reminder-create'
 import { onDefault } from './default'
 import { recognizers } from '../../server'
+
+// Important: this must be / unless you speficy the default dialog with code
+// somewhere that wasn't documented. Since this is the expected default
+// Dialog id, I'll leave it as standard.
+export const DefaultDialogId = '/'
 
 export const DefaultDialog = new builder.IntentDialog({
 	recognizers: recognizers,

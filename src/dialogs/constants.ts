@@ -11,5 +11,4 @@ export const ShowSettingsLuisName = 'Bot.ShowSettings'
 export const StopLuisName = 'Utilities.Stop'
 export const UnignoreUserLuisName = 'UnignoreUser'
 
-export const DefaultDialogName = '/'
 export const intentThreshold = 0.4
