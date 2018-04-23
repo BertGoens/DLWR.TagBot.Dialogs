@@ -1,11 +1,16 @@
-import { bot } from '../server'
-import { DefaultDialog, DefaultDialogId } from './default'
+import { DefaultDialogId, DefaultDialog } from './default/index'
 import { SelectDocumentDialogId, SelectDocumentIntentDialog } from './select-document/index'
-import { TagDocumentDialog, TagDocumentName } from './tag-document/tag-document'
+import { TagDocumentDialogId, TagDocumentDialog } from './tag-document/index'
+import { logSilly } from '../util'
 
 export const LibraryId = '*'
-export const applyDialogs = () => {
-	bot.library(LibraryId).dialog(DefaultDialogId, DefaultDialog)
-	bot.library(LibraryId).dialog(SelectDocumentDialogId, SelectDocumentIntentDialog)
-	bot.library(LibraryId).dialog(TagDocumentName, TagDocumentDialog)
+
+// TODO, pass and accept these variables
+export const applyDialogs = ({ bot, recognizer }) => {
+	bot.library(LibraryId).dialog(DefaultDialogId, DefaultDialog(recognizer))
+	logSilly(`Added: ${LibraryId}:${DefaultDialogId}`)
+	bot.library(LibraryId).dialog(SelectDocumentDialogId, SelectDocumentIntentDialog(recognizer))
+	logSilly(`Added: ${LibraryId}:${SelectDocumentDialogId}`)
+	bot.library(LibraryId).dialog(TagDocumentDialogId, TagDocumentDialog(recognizer))
+	logSilly(`Added: ${LibraryId}:${TagDocumentDialogId}`)
 }

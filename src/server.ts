@@ -12,7 +12,8 @@ import { join } from 'path'
 import { hostname, platform } from 'os'
 import * as restify from 'restify'
 import { applyRoutes, botSubscribeEvents, logInfo, logSilly } from './util'
-import { applyDialogs } from './dialogs'
+import { applyDialogs, LibraryId } from './dialogs'
+import { DefaultDialogId } from './dialogs/default'
 logSilly('Starting Server', format(Date.now(), 'YYYY/MM/DD-HH:mm:ss'))
 logSilly(`Server hostname: ${hostname()}, platform: ${platform()}`)
 
@@ -49,11 +50,11 @@ const connector = new builder.ChatConnector({
 // Listen for messages from users
 server.post(apiMessageController, connector.listen())
 
-export const bot = new builder.UniversalBot(connector)
+const bot = new builder.UniversalBot(connector, DefaultDialogId, LibraryId)
 bot.set('storage', new builder.MemoryBotStorage())
 
 // Main dialog with LUIS
-export const recognizers = [new builder.LuisRecognizer(process.env.LUIS_MODEL_URL)]
+const defaultRecognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL)
 
-applyDialogs()
-botSubscribeEvents()
+applyDialogs({ bot: bot, recognizer: defaultRecognizer })
+botSubscribeEvents(bot)

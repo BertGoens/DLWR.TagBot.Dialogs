@@ -2,9 +2,8 @@ import * as builder from 'botbuilder'
 import { SettingsStore, ISettings } from '../stores'
 import * as datefns from 'date-fns'
 import { logSilly, logError } from '.'
-import { bot } from '../server'
 
-export const botSubscribeEvents = () => {
+export const botSubscribeEvents = (bot) => {
 	bot.on('contactRelationUpdate', function(message) {
 		if (message.action === 'add') {
 			const name = message.user ? message.user.name : null
