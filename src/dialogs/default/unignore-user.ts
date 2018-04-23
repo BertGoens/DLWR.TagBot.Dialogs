@@ -1,5 +1,5 @@
 import * as builder from 'botbuilder'
-import { ISettings, SettingsStore } from '../stores'
+import { ISettings, SettingsStore } from '../../stores'
 
 export const UnignoreUserialog: builder.IDialogWaterfallStep[] = [
 	async function sendIgnoreMessage(session, args, next) {

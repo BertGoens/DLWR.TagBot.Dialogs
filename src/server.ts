@@ -49,11 +49,11 @@ const connector = new builder.ChatConnector({
 // Listen for messages from users
 server.post(apiMessageController, connector.listen())
 
-const bot = new builder.UniversalBot(connector)
+export const bot = new builder.UniversalBot(connector)
 bot.set('storage', new builder.MemoryBotStorage())
 
 // Main dialog with LUIS
-export const recognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL)
+export const recognizers = [new builder.LuisRecognizer(process.env.LUIS_MODEL_URL)]
 
-applyDialogs({ bot: bot, recognizers: [recognizer] })
-botSubscribeEvents(bot)
+applyDialogs()
+botSubscribeEvents()

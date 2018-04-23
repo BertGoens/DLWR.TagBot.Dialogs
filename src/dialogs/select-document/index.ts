@@ -14,6 +14,7 @@ import {
 	CancelLuisName,
 	HelpLuisName,
 } from '../constants'
+import { recognizers } from '../../server'
 
 export interface IApplyDialogOptions {
 	recognizers: [builder.IIntentRecognizer]
@@ -22,16 +23,14 @@ export interface IApplyDialogOptions {
 
 export const SelectDocumentDialogId = '/select-document'
 
-export const SelectDocumentIntentDialog = (options: IApplyDialogOptions) => {
-	return new builder.IntentDialog({
-		recognizers: options.recognizers,
-		intentThreshold: intentThreshold,
-	})
-		.onBegin(BeginAction)
-		.matches(/Select document \d/gi, SelectDocumentsRegex)
-		.matches(ShowPreviousLuisName, PreviousPageIntent)
-		.matches(ShowNextLuisName, NextPageIntent)
-		.matchesAny([StopLuisName, CancelLuisName], StopIntent)
-		.matches(HelpLuisName, HelpIntent)
-		.onDefault(DefaultAction)
-}
+export const SelectDocumentIntentDialog = new builder.IntentDialog({
+	recognizers: recognizers,
+	intentThreshold: intentThreshold,
+})
+	.onBegin(BeginAction)
+	.matches(/Select document \d/gi, SelectDocumentsRegex)
+	.matches(ShowPreviousLuisName, PreviousPageIntent)
+	.matches(ShowNextLuisName, NextPageIntent)
+	.matchesAny([StopLuisName, CancelLuisName], StopIntent)
+	.matches(HelpLuisName, HelpIntent)
+	.onDefault(DefaultAction)

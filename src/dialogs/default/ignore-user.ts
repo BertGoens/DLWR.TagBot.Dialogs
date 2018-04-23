@@ -1,7 +1,7 @@
 import * as builder from 'botbuilder'
 import * as datefns from 'date-fns'
-import { SettingsStore, ISettings } from '../stores'
-import { resolveDateV2 } from '../util/entity-resolver'
+import { SettingsStore, ISettings } from '../../stores'
+import { resolveDateV2 } from '../../util/entity-resolver'
 
 export const IgnoreUserDialog: builder.IDialogWaterfallStep[] = [
 	async function sendIgnoreMessage(session, args, next) {

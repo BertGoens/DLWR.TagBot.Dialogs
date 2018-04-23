@@ -1,7 +1,7 @@
 import * as builder from 'botbuilder'
-import { IQueryOptions, SharePointStore } from '../stores'
-import { resolveDocumentAuthor, resolveDocumentFileType } from '../util/entity-resolver'
-import { SelectDocumentDialogId } from './select-document/index'
+import { IQueryOptions, SharePointStore } from '../../stores'
+import { resolveDocumentAuthor, resolveDocumentFileType } from '../../util/entity-resolver'
+import { SelectDocumentDialogId } from '../select-document/index'
 
 export const SharePointSearchLuisName = 'SharePoint.Search'
 export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [

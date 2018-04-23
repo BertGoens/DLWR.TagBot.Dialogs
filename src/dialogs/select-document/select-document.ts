@@ -1,5 +1,5 @@
 import * as builder from 'botbuilder'
-import { TagDocumentName } from '../tag-document'
+import { TagDocumentName } from '../tag-document/tag-document'
 
 export const SelectDocumentsRegex: builder.IDialogWaterfallStep[] = [
 	function validateSelection(session, results, next) {

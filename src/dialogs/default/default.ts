@@ -1,5 +1,5 @@
 import * as builder from 'botbuilder'
-import { logInfo } from '../util'
+import { logInfo } from '../../util/logger'
 
 export const onDefault: builder.IDialogWaterfallStep[] = [
 	async function informUserOfMisunderstanding(session, args, next) {

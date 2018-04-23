@@ -1,10 +1,8 @@
-import { IDocument, KeywordStore, SharePointStore } from '../stores'
 import * as builder from 'botbuilder'
-import { recognizer } from '../server'
-import { logSilly, logInfo } from '../util'
-import { intentThreshold } from './constants'
-import { NoneLuisName, CancelLuisName, StopLuisName, ConfirmLuisName } from './constants'
 import { debuglog } from 'util'
+import { IDocument, KeywordStore, SharePointStore } from '../../stores'
+import { logInfo } from '../../util'
+import { CancelLuisName, ConfirmLuisName, StopLuisName, intentThreshold } from '../constants'
 
 export const TagDocumentName = '/TagDocument'
 export const TagDocumentDialog: builder.IDialogWaterfallStep[] = [

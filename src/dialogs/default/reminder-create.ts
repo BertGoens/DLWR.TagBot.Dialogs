@@ -1,9 +1,7 @@
 import * as builder from 'botbuilder'
 import * as datefns from 'date-fns'
 import * as schedule from 'node-schedule'
-import { resolveDateV2 } from '../util/entity-resolver'
-
-//import { SettingsStore } from "../stores";
+import { resolveDateV2 } from '../../util/entity-resolver'
 
 const sendReminder = () => {
 	// send reminder to user

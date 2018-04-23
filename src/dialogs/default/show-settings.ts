@@ -1,6 +1,6 @@
 import * as builder from 'botbuilder'
-import { SettingsStore, ISettings } from '../stores'
-import { logError, logDebug } from '../util'
+import { SettingsStore, ISettings } from '../../stores'
+import { logError, logDebug } from '../../util'
 import { debuglog } from 'util'
 
 export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
