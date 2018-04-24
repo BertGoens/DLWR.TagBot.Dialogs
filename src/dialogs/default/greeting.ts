@@ -5,8 +5,8 @@ const greetingMessage = (session) => {
 		.text("Hi, let's tag some documents!")
 		.suggestedActions(
 			builder.SuggestedActions.create(session, [
-				builder.CardAction.imBack(session, 'Search for documents', '👍'),
-				builder.CardAction.imBack(session, 'Quit', '👎'),
+				builder.CardAction.imBack(session, 'Search for documents', 'Ok 👍'),
+				builder.CardAction.imBack(session, 'Quit', 'No thank you 👎'),
 			])
 		)
 }

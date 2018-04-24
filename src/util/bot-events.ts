@@ -34,7 +34,7 @@ export const botSubscribeEvents = (bot) => {
 						.then(() => {
 							const reply = new builder.Message()
 								.address(address)
-								.text('Hello %s', identity.name || 'there')
+								.text('Hello %s, thanks for adding me.', identity.name || 'there')
 							bot.send(reply)
 						})
 						.catch((err) => {

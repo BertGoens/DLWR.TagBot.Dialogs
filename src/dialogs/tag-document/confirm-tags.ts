@@ -10,7 +10,7 @@ export const ConfirmIntent: builder.IDialogWaterfallStep[] = [
 		try {
 			await SharePointStore.SaveDocument(document)
 			session.send(msg)
-			session.endDialog()
+			session.endDialog("I'll contact you the next workday if there is anything to be tagged.")
 		} catch (error) {
 			session.send('Something went wrong when trying to save, please try again.')
 		}

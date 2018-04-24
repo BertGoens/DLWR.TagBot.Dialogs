@@ -1,4 +1,5 @@
 import * as builder from 'botbuilder'
+
 export const HelpIntent: builder.IDialogWaterfallStep[] = [
 	function sendHelpMessage(session, args, next) {
 		const message = new builder.Message()

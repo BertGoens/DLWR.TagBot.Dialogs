@@ -78,6 +78,7 @@ export const BeginAction = async (session: builder.Session, args, next) => {
 		session.send('Something went wrong when collecting the tags for the selected document')
 		return
 	}
+	logSilly(`Tags retrieved: ${generatedTags.length}`)
 
 	// Save parameters as dialog data
 	session.dialogData.document = args.document

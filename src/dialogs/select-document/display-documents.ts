@@ -13,7 +13,7 @@ export interface IDisplayChoice {
 export const DispayDocumentsMsg = (options: IDisplayChoice) => {
 	// display 5 choices
 	const documents: IDocument[] = options.documents
-	const pagerSize = 4 // ZERO BASED
+	const pagerSize = 3 // ZERO BASED
 
 	const myPage = Pager().TakePage({
 		documents: options.documents,
