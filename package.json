@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "botbuilder": "^3.13.1",
+    "botbuilder": "^3.14.1",
     "date-fns": "^1.29.0",
     "dotenv-safe": "^5.0.1",
     "minimist": "^1.2.0",
@@ -36,6 +36,7 @@
     "@types/node": "^9.4.7",
     "@types/node-schedule": "^1.2.2",
     "@types/restify": "^5.0.7",
-    "@types/winston": "^2.3.8"
+    "@types/winston": "^2.3.8",
+    "prettier": "1.12.1"
   }
 }
