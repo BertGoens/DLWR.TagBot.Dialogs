@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { logInfo } from '../util/logger'
+import { logInfo, logSilly } from '../util/logger'
 import { LogHandleAxiosError } from '../util/axios-helpers'
 import { getStoreUrl } from '../util/store-helper'
 
@@ -25,11 +25,12 @@ export interface IKeywordCollection {
 }
 
 async function GetKeywords(filepath: string): Promise<IKeywordCollection> {
-	const params = '?path=' + filepath
+	const params = '?path=' + encodeURIComponent(filepath)
 	const safeParams = encodeURI(params)
 	const url = store.defaults.baseURL + safeParams
 
 	try {
+		logSilly(url)
 		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data

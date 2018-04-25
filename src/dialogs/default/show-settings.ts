@@ -21,7 +21,7 @@ export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
 		if (createSettings) {
 			debuglog('Create settings')
 			try {
-				userSettings = await SettingsStore.CreateSettings(userId, {
+				userSettings = await SettingsStore.CreateSettings({
 					userId: userId,
 					channelId: channelId,
 				})

@@ -8,7 +8,7 @@ export const ConfirmIntent: builder.IDialogWaterfallStep[] = [
 		const msg = new builder.Message().text('Ok, I have added these tags: ' + document.Tags)
 
 		try {
-			await SharePointStore.SaveDocument(document)
+			const result = await SharePointStore.SaveDocument(document)
 			session.send(msg)
 			session.endDialog("I'll contact you the next workday if there is anything to be tagged.")
 		} catch (error) {

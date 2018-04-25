@@ -66,7 +66,7 @@ export const botSubscribeEvents = (bot) => {
 				lastMessageSent: datefns.addDays(Date.now(), 0),
 			}
 
-			const reply = await SettingsStore.CreateSettings(userId, settings)
+			const reply = await SettingsStore.CreateSettings(settings)
 		} catch (error) {
 			logSilly(`User ${userId} on ${channelId} coudn't be created.`)
 		}

@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { LogHandleAxiosError } from '../util/axios-helpers'
-import { logInfo } from '../util/logger'
+import { logInfo, logSilly } from '../util/logger'
 import { getStoreUrl } from '../util/store-helper'
 
 const myStoreUrl = getStoreUrl({
@@ -39,17 +39,17 @@ async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
 
 		if (q.title) {
 			q.title.forEach((myTitle) => {
-				result += `(title:${myTitle}*) `
+				result += `(title:${encodeURIComponent(myTitle)}*) `
 			})
 		}
 		if (q.author) {
 			q.author.forEach((myAuthor) => {
-				result += `(author:${myAuthor}*) `
+				result += `(author:${encodeURIComponent(myAuthor)}*) `
 			})
 		}
 		if (q.filetype) {
 			q.filetype.forEach((myFiletype) => {
-				result += `(filetype:${myFiletype}) `
+				result += `(filetype:${encodeURIComponent(myFiletype)}) `
 			})
 		}
 
@@ -61,6 +61,7 @@ async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
 	const url = store.defaults.baseURL + safeParams
 
 	try {
+		logSilly(url)
 		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
@@ -70,13 +71,17 @@ async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
 }
 
 async function SaveDocument(document: IDocument) {
-	const params = `?file=${document.Path}&tags=${document.Tags}`
+	const tagUrlArray = document.Tags.map((myTag) => {
+		return '&tags=' + encodeURIComponent(myTag)
+	})
+	const params = `?file=${encodeURIComponent(document.Path)}${tagUrlArray.join('')}`
 	const safeParams = encodeURI(params)
 
 	const url = store.defaults.baseURL + safeParams
 
 	try {
-		const result = await store.get(safeParams)
+		logSilly(url)
+		const result = await store.post(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
 	} catch (error) {

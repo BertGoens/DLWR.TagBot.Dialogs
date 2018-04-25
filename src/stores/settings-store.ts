@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { logInfo } from '../util/logger'
+import { logInfo, logSilly } from '../util/logger'
 import { LogHandleAxiosError } from '../util/axios-helpers'
 import { getStoreUrl } from '../util/store-helper'
 
@@ -22,10 +22,11 @@ export interface ISettings {
 }
 
 async function GetSettingsById(id: string, channel?: string): Promise<ISettings> {
-	const safeParams = encodeURI(`?id=${id}`)
+	const safeParams = `?id=${encodeURIComponent(id)}`
 	const url = store.defaults.baseURL + safeParams
 
 	try {
+		logSilly(url)
 		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
@@ -35,9 +36,10 @@ async function GetSettingsById(id: string, channel?: string): Promise<ISettings>
 }
 
 async function SaveSettingsById(id: string, settings: ISettings): Promise<ISettings> {
-	const safeParams = encodeURI(`?id=${id}`)
+	const safeParams = `?id=${encodeURIComponent(id)}`
 	const url = store.defaults.baseURL + safeParams
 	try {
+		logSilly(url)
 		const result = await store.put(safeParams, settings)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
@@ -46,8 +48,8 @@ async function SaveSettingsById(id: string, settings: ISettings): Promise<ISetti
 	}
 }
 
-async function CreateSettings(id: string, settings: ISettings): Promise<ISettings> {
-	const safeParams = encodeURI('')
+async function CreateSettings(settings: ISettings): Promise<ISettings> {
+	const safeParams = ''
 	const url = store.defaults.baseURL + safeParams
 	try {
 		const result = await store.post(safeParams, settings)

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { logInfo } from '../util'
+import { logInfo, logSilly } from '../util'
 import { LogHandleAxiosError } from '../util/axios-helpers'
 
 const storeUrl = process.env.LUIS_MODEL_URL
@@ -36,6 +36,7 @@ async function recognize(utterance: string): Promise<ILuisResponse> {
 	const url = store.defaults.baseURL + safeParams
 
 	try {
+		logSilly(url)
 		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
