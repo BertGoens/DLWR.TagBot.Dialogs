@@ -22,11 +22,11 @@ export interface ISettings {
 }
 
 async function GetSettingsById(id: string, channel?: string): Promise<ISettings> {
-	const params = `?id=${id}`
-	const url = myStoreUrl + params
+	const safeParams = encodeURI(`?id=${id}`)
+	const url = store.defaults.baseURL + safeParams
 
 	try {
-		const result = await store.get(params)
+		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
 	} catch (error) {
@@ -35,10 +35,10 @@ async function GetSettingsById(id: string, channel?: string): Promise<ISettings>
 }
 
 async function SaveSettingsById(id: string, settings: ISettings): Promise<ISettings> {
-	const params = `?id=${id}`
-	const url = store.defaults.baseURL + params
+	const safeParams = encodeURI(`?id=${id}`)
+	const url = store.defaults.baseURL + safeParams
 	try {
-		const result = await store.put(params, settings)
+		const result = await store.put(safeParams, settings)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
 	} catch (error) {
@@ -47,10 +47,10 @@ async function SaveSettingsById(id: string, settings: ISettings): Promise<ISetti
 }
 
 async function CreateSettings(id: string, settings: ISettings): Promise<ISettings> {
-	const params = ''
-	const url = store.defaults.baseURL + params
+	const safeParams = encodeURI('')
+	const url = store.defaults.baseURL + safeParams
 	try {
-		const result = await store.post(params, settings)
+		const result = await store.post(safeParams, settings)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
 	} catch (error) {

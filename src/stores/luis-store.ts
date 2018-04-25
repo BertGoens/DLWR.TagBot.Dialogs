@@ -32,10 +32,11 @@ export interface ILuisResponse {
 }
 
 async function recognize(utterance: string): Promise<ILuisResponse> {
-	const url = storeUrl + utterance
+	const safeParams = encodeURI(utterance)
+	const url = store.defaults.baseURL + safeParams
 
 	try {
-		const result = await store.get(utterance)
+		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
 	} catch (error) {

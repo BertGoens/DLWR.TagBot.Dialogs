@@ -57,10 +57,11 @@ async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
 	}
 
 	const params = fillParams(q)
-	const url = myStoreUrl + params
+	const safeParams = encodeURI(params)
+	const url = store.defaults.baseURL + safeParams
 
 	try {
-		const result = await store.get(params)
+		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
 	} catch (error) {
@@ -70,10 +71,12 @@ async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
 
 async function SaveDocument(document: IDocument) {
 	const params = `?file=${document.Path}&tags=${document.Tags}`
-	const url = myStoreUrl + params
+	const safeParams = encodeURI(params)
+
+	const url = store.defaults.baseURL + safeParams
 
 	try {
-		const result = await store.get(params)
+		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
 	} catch (error) {

@@ -26,10 +26,11 @@ export interface IKeywordCollection {
 
 async function GetKeywords(filepath: string): Promise<IKeywordCollection> {
 	const params = '?path=' + filepath
-	const url = myStoreUrl + params
+	const safeParams = encodeURI(params)
+	const url = store.defaults.baseURL + safeParams
 
 	try {
-		const result = await store.get(params)
+		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
 		return result.data
 	} catch (error) {
