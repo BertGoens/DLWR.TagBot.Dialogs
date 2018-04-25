@@ -3,6 +3,11 @@ require('dotenv-safe').config({
 	allowEmptyValues: true,
 })
 
+// Set NODE_ENV to development if unset
+if (!process.env.NODE_ENV) {
+	process.env.NODE_ENV = 'development'
+}
+
 // command line arguments (overrule .env file)
 const argv = require('minimist')(process.argv.slice(2))
 
@@ -58,3 +63,5 @@ const defaultRecognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL)
 
 applyDialogs({ bot: bot, recognizer: defaultRecognizer })
 botSubscribeEvents(bot)
+
+module.exports = server
