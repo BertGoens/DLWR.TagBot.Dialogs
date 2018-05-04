@@ -1,0 +1,9 @@
+{
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": true
+	},
+	"files.autoSave": "afterDelay",
+	// Prettier autoformat on save
+	"editor.formatOnSave": true,
+	"prettier.eslintIntegration": true
+}

@@ -2,13 +2,9 @@
 	"name": "dlwr.tagbot",
 	"version": "1.0.0",
 	"description": "TagBot",
-	"main": "server.js",
+	"main": "index.js",
 	"scripts": {
 		"start": "node index.js",
-		"tsc": "node ./node_modules/typescript/bin/tsc",
-		"tsc:w": "node ./node_modules/typescript/bin/tsc --watch",
-		"tsc:path": "tsc",
-		"tsc:path:w": "tsc -w",
 		"dev": "backpack dev",
 		"build": "backpack build"
 	},
@@ -19,7 +15,8 @@
 		"url": "https://github.com/BertGoens/TagBot-POC"
 	},
 	"engines": {
-		"node": "8.9.4"
+		"node": ">=8.9.0",
+		"yarn": "^1.6.0"
 	},
 	"dependencies": {
 		"axios": "^0.18.0",
@@ -33,14 +30,8 @@
 		"winston": "^2.4.1"
 	},
 	"devDependencies": {
-		"@types/bluebird": "^3.5.20",
-		"@types/dotenv-safe": "^4.0.1",
-		"@types/node": "^9.4.7",
-		"@types/node-schedule": "^1.2.2",
-		"@types/restify": "^5.0.7",
-		"@types/winston": "^2.3.8",
 		"awesome-typescript-loader": "3.0.0-beta.18",
-		"backpack-core": "^0.7.0",
-		"prettier": "1.12.1"
-	}
+		"backpack-core": "^0.7.0"
+	},
+	"private": true
 }
