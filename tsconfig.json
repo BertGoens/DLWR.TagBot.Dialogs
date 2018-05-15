@@ -1,11 +1,11 @@
 {
-  "compilerOptions": {
-    "target": "es2017",
-    "sourceMap": true,
-    "inlineSourceMap": false,
-    "module": "commonjs",
-    "rootDir": "src",
-    "outDir": "build"
-  },
-  "exclude": ["node_modules", "**/*.spec.ts"]
+	"compilerOptions": {
+		"target": "es2017",
+		"sourceMap": true,
+		"inlineSourceMap": false,
+		"module": "commonjs",
+		"rootDir": "src",
+		"outDir": "build"
+	},
+	"exclude": ["node_modules", "**/*.spec.ts"]
 }
