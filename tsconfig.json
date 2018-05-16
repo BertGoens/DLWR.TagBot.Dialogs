@@ -1,11 +1,14 @@
 {
 	"compilerOptions": {
-		"target": "es2017",
+		"target": "es2015",
 		"sourceMap": true,
 		"inlineSourceMap": false,
 		"module": "commonjs",
 		"rootDir": "src",
-		"outDir": "build"
+		"outDir": "build",
+		"lib": [
+			"es2015", "es2016.array.include"
+		]
 	},
 	"exclude": ["node_modules", "**/*.spec.ts"]
 }
