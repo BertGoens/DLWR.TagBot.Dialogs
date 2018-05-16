@@ -17,7 +17,7 @@ import { PreviousPageIntent } from './show-previous'
 import { StopIntent } from './stop'
 import { SuggestIntent } from './suggest-tags'
 
-export const TaxonomyFieldDialogId = '/taxonomy-field'
+export const TaxonomyFieldDialogId = '/add-taxonomy-field'
 
 export const TaxonomyFieldDialog = (recognizer) => {
 	return new builder.IntentDialog({

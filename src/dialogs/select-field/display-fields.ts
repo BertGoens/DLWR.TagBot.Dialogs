@@ -32,6 +32,10 @@ export const SendSelectFieldMsg = async (session: builder.Session, args, next) =
 		}
 	})
 
+	// save dialogdata
+	session.dialogData.document = document
+	session.dialogData.response = response
+
 	const msg = makeFieldMessage({ fields: fields, session: session })
 
 	session.send(msg)

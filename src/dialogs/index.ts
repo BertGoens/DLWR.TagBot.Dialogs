@@ -1,8 +1,8 @@
 import { logSilly } from '../util'
 import { DefaultDialog, DefaultDialogId } from './default/index'
+import { TaxonomyFieldDialog, TaxonomyFieldDialogId } from './fields/taxonomy'
 import { SelectDocumentDialogId, SelectDocumentIntentDialog } from './select-document/index'
 import { SelectFieldDialog, SelectFieldDialogId } from './select-field'
-import { TagDocumentDialog, TagDocumentDialogId } from './tag-document/index'
 
 // If I were to make custom Libraries for some intents
 // This is how I would do it:
@@ -21,6 +21,6 @@ export const applyDialogs = ({ bot, recognizer }) => {
 	bot.library(LibraryId).dialog(SelectFieldDialogId, SelectFieldDialog(recognizer))
 	logSilly(`Added: ${LibraryId}:${SelectFieldDialogId}`)
 
-	bot.library(LibraryId).dialog(TagDocumentDialogId, TagDocumentDialog(recognizer))
-	logSilly(`Added: ${LibraryId}:${TagDocumentDialogId}`)
+	bot.library(LibraryId).dialog(TaxonomyFieldDialogId, TaxonomyFieldDialog(recognizer))
+	logSilly(`Added: ${LibraryId}:${TaxonomyFieldDialogId}`)
 }
