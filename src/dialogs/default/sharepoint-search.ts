@@ -1,5 +1,6 @@
 import * as builder from 'botbuilder'
-import { IQueryOptions, SharePointStore } from '../../stores'
+import { LibraryId } from '..'
+import { GetDocuments, GetTaxonomyValues, IQueryOptions } from '../../stores'
 import { resolveDocumentAuthor, resolveDocumentFileType } from '../../util/entity-resolver'
 import { SelectDocumentDialogId } from '../select-document/index'
 
@@ -23,11 +24,22 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 			),
 		}
 
-		const documents = await SharePointStore.GetDocuments(documentFilter)
+		const response = await GetDocuments(documentFilter)
+
+		const taxMap = {}
+		await response.data.Fields.map(async (field) => {
+			if (field.Type === 'TaxonomyField') {
+				const taxId = field.TypeProperties['TermsetId']
+				if (!taxMap[taxId]) {
+					const values = await GetTaxonomyValues(taxId)
+					taxMap[taxId] = values
+				}
+				field.TypeProperties['Values'] = taxMap[taxId]
+			}
+		})
 
 		// end conversation when nothing untagged
-		if (!documents || (documents && documents.length === 0)) {
-			// TODO: change next workday to take into account the time muted for the bot
+		if ((!response && !response.data) || response.data.Documents.length === 0) {
 			session.send(
 				new builder.Message().text(
 					'No untagged documents found. ' +
@@ -37,15 +49,14 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 			return session.endDialog()
 		}
 
-		session.userData.documents = documents
+		session.userData.documents = response.data
 
 		session.send(
-			documents.length +
+			response.data.Documents.length +
 				' documents found with missing requirements, ' +
 				'which document would you like to tag?'
 		)
 
-		session.beginDialog(`*:${SelectDocumentDialogId}`)
-		//session.beginDialog('*:' + SelectDocumentName, {})
+		session.beginDialog(`${LibraryId}:${SelectDocumentDialogId}`)
 	},
 ]

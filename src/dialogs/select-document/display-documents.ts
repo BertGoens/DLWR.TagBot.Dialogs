@@ -1,22 +1,22 @@
-import * as builder from 'botbuilder'
-import { IDocument } from '../../stores'
-import { logSilly } from '../../util'
-import { Pager } from '../../util/pager'
+import * as builder from 'botbuilder';
+import { IDocument, IResponse } from '../../stores';
+import { logSilly } from '../../util';
+import { Pager } from '../../util/pager';
 
 export interface IDisplayChoice {
 	session: builder.Session
-	documents: IDocument[]
+	response: IResponse
 	currentViewIndex?: number
 	requestedViewIndex?: number
 }
 
 export const DispayDocumentsMsg = (options: IDisplayChoice) => {
 	// display 5 choices
-	const documents: IDocument[] = options.documents
+	const documents: IDocument[] = options.response.Documents
 	const pagerSize = 3 // ZERO BASED
 
 	const myPage = Pager().TakePage({
-		documents: options.documents,
+		documents: options.response.Documents,
 		pageSize: pagerSize,
 		requestedPage: options.requestedViewIndex,
 	})
@@ -29,11 +29,15 @@ export const DispayDocumentsMsg = (options: IDisplayChoice) => {
 			'Select'
 		)
 
+		const missingProperties = myDocument.MissingProperties.map((prop) => {
+			return prop.Title
+		}).join(', ')
+
 		return new builder.ThumbnailCard(options.session)
 			.title(myDocument.Title)
 			.buttons([fileLink, selectFile])
 			.subtitle(`Author: ${myDocument.Author}`)
-			.text(`Missing: ${myDocument.MissingProperties}`)
+			.text(`Missing: ${missingProperties.toString()}`)
 	})
 
 	const msg = new builder.Message(options.session).attachments(thumbnailCards)
@@ -60,10 +64,9 @@ export const DispayDocumentsMsg = (options: IDisplayChoice) => {
 export const BeginAction = (session: builder.Session, args, next) => {
 	const dcOptions: IDisplayChoice = {
 		session: session,
-		documents: session.userData.documents,
+		response: session.userData.documents,
 	}
 	const msgSelectDocument = DispayDocumentsMsg(dcOptions)
 
-	// builder.Prompts.text(session, msgSelectDocument)
 	session.send(msgSelectDocument)
 }

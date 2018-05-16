@@ -1,5 +1,5 @@
 import * as builder from 'botbuilder'
-import { IDocument } from '../../stores'
+import { IDocument } from '../../../stores/sharepoint-store'
 import { DispayTagsMsg, IDisplayChoice } from './util/build-tags-msg'
 
 export const SelectTagRegex: builder.IDialogWaterfallStep[] = [

@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { LogHandleAxiosError } from '../util/axios-helpers'
 import { logInfo, logSilly } from '../util/logger'
 import { getStoreUrl } from '../util/store-helper'
@@ -14,12 +14,28 @@ const store = axios.create({
 	baseURL: myStoreUrl,
 })
 
+export interface IResponse {
+	Documents: IDocument[]
+	Fields: IField[]
+}
+
+export interface IField {
+	Title: string
+	Type: string
+	Id: string
+	TypeProperties: {}
+}
+
 export interface IDocument {
 	Title: string
 	Tags: string[]
 	Path: string
 	Author: string
-	MissingProperties: string
+	MissingProperties: {
+		Title: string
+		Type: string
+		Id: string
+	}[]
 	AvailableTags: string[]
 }
 
@@ -29,7 +45,7 @@ export interface IQueryOptions {
 	filetype?: string[]
 }
 
-async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
+export async function GetDocuments(q: IQueryOptions): Promise<AxiosResponse<IResponse>> {
 	// match the query language
 	// https://docs.microsoft.com/en-us/sharepoint/dev/general-development/keyword-query-language-kql-syntax-reference
 	// Example url:
@@ -61,16 +77,34 @@ async function GetDocuments(q: IQueryOptions): Promise<IDocument[]> {
 	const url = store.defaults.baseURL + safeParams
 
 	try {
+		// TODO HACK REMOVE ME
+		store.defaults.baseURL = 'http://192.168.0.107:8080/speedhack'
 		logSilly(url)
 		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
-		return result.data
+		// TODO HACK REMOVE ME
+		store.defaults.baseURL = 'http://192.168.0.107/api/SharePoint'
+		return result
 	} catch (error) {
 		LogHandleAxiosError({ error: error, url: url })
 	}
 }
 
-async function SaveDocument(document: IDocument) {
+export async function GetTaxonomyValues(taxstoreGuid: string): Promise<AxiosResponse<string[]>> {
+	const route = '/GetTaxonomyStoreValues'
+	const safeParams = `?guid=${encodeURIComponent(taxstoreGuid)}`
+	const url = store.defaults.baseURL + route + safeParams
+	try {
+		logSilly(url)
+		const result = await store.get(route + safeParams)
+		logInfo(result.config.method, result.status, result.config.url)
+		return result
+	} catch (error) {
+		LogHandleAxiosError({ error: error, url: url })
+	}
+}
+
+export async function SaveDocument(document: IDocument) {
 	const tagUrlArray = document.Tags.map((myTag) => {
 		return '&tags=' + encodeURIComponent(myTag)
 	})
@@ -87,9 +121,4 @@ async function SaveDocument(document: IDocument) {
 	} catch (error) {
 		LogHandleAxiosError({ error: error, url: url })
 	}
-}
-
-export const SharePointStore = {
-	GetDocuments: GetDocuments,
-	SaveDocument: SaveDocument,
 }

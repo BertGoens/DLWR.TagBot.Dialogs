@@ -1,37 +1,36 @@
 import * as builder from 'botbuilder'
 import {
 	CancelLuisName,
+	ConfirmLuisName,
 	HelpLuisName,
 	ShowNextLuisName,
 	ShowPreviousLuisName,
 	StopLuisName,
 	intentThreshold,
-} from '../constants'
-import { DefaultAction } from './default'
-import { BeginAction } from './display-documents'
+} from '../../constants'
+import { ConfirmIntent } from './confirm-tags'
+import { DisplayTags } from './display-tags'
 import { HelpIntent } from './help'
-import { SelectDocumentsRegex } from './select-document'
+import { SelectTagRegex } from './select-tag'
 import { NextPageIntent } from './show-next'
 import { PreviousPageIntent } from './show-previous'
 import { StopIntent } from './stop'
+import { SuggestIntent } from './suggest-tags'
 
-export interface IApplyDialogOptions {
-	recognizers: [builder.IIntentRecognizer]
-	bot: builder.UniversalBot
-}
+export const TaxonomyFieldDialogId = '/taxonomy-field'
 
-export const SelectDocumentDialogId = '/select-document'
-
-export const SelectDocumentIntentDialog = (recognizer) => {
+export const TaxonomyFieldDialog = (recognizer) => {
 	return new builder.IntentDialog({
 		recognizers: [recognizer],
 		intentThreshold: intentThreshold,
 	})
-		.onBegin(BeginAction)
-		.matches(/Select document \d/gi, SelectDocumentsRegex)
+		.onBegin(DisplayTags)
+		.matches(/Add tag ["']/gi, SelectTagRegex)
+		.matches(/suggest/gi, SuggestIntent)
+		.matches(ConfirmLuisName, ConfirmIntent)
 		.matches(ShowPreviousLuisName, PreviousPageIntent)
 		.matches(ShowNextLuisName, NextPageIntent)
 		.matchesAny([StopLuisName, CancelLuisName], StopIntent)
 		.matches(HelpLuisName, HelpIntent)
-		.onDefault(DefaultAction)
+		.onDefault(HelpIntent)
 }

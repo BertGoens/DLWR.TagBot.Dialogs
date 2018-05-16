@@ -1,9 +1,10 @@
 import * as builder from 'botbuilder'
-import { IDocument, KeywordStore } from '../../stores'
-import { logSilly } from '../../util'
+import { KeywordStore } from '../../../stores/keyword-store'
+import { IDocument } from '../../../stores/sharepoint-store'
+import { logSilly } from '../../../util/logger'
 import { DispayTagsMsg, IDisplayChoice } from './util/build-tags-msg'
 
-export const BeginAction = async (session: builder.Session, args, next) => {
+export const DisplayTags = async (session: builder.Session, args, next) => {
 	// get parameters
 	const document: IDocument = args.document
 

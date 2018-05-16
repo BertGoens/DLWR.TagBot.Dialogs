@@ -1,5 +1,5 @@
 import * as builder from 'botbuilder'
-import { IDisplayChoice, DispayDocumentsMsg } from './display-documents'
+import { DispayDocumentsMsg, IDisplayChoice } from './display-documents'
 
 export const NextPageIntent: builder.IDialogWaterfallStep[] = [
 	function showNextPage(session, args, next) {
@@ -8,7 +8,7 @@ export const NextPageIntent: builder.IDialogWaterfallStep[] = [
 
 		const options: IDisplayChoice = {
 			session: session,
-			documents: session.userData.documents,
+			response: session.userData.documents,
 			currentViewIndex: session.userData.currentViewIndex,
 			requestedViewIndex: newIndex,
 		}
