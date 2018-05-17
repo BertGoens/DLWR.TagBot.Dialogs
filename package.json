@@ -30,6 +30,11 @@
 		"winston": "^2.4.1"
 	},
 	"devDependencies": {
+		"@types/date-fns": "^2.6.0",
+		"@types/dotenv-safe": "^5.0.0",
+		"@types/node": "^10.1.0",
+		"@types/restify": "^5.0.8",
+		"@types/winston": "^2.3.9",
 		"awesome-typescript-loader": "3.0.0-beta.18",
 		"backpack-core": "^0.7.0"
 	},
