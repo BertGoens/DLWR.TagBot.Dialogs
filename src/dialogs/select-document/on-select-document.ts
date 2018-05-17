@@ -14,13 +14,12 @@ export const SelectDocumentsRegex: builder.IDialogWaterfallStep[] = [
 		})
 	},
 	function(session, results) {
-		// TODO Check their answer
 		if (results.response) {
-			session.send("That's correct! You are wise beyond your years...")
+			session.send('Document complete!')
+			session.endDialogWithResult({ response: true })
 		} else {
-			session.send(
-				"Sorry you couldn't figure it out. Everyone knows that the meaning of life is 42."
-			)
+			session.send('Perhaps another time')
+			session.endDialogWithResult({ response: false })
 		}
 	},
 ]

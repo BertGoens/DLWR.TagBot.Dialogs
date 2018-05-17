@@ -1,7 +1,39 @@
 import * as builder from 'botbuilder'
 import { LibraryId } from '..'
 import { IDocument, IField } from '../../stores'
+import { FieldTextDialogId } from '../fields/fieldtext'
+import { IFieldTextArgs } from '../fields/fieldtext/steps'
 import { TaxonomyFieldDialogId } from '../fields/taxonomy'
+import { MakeFieldMessage } from './display-fields'
+
+interface IOptions {
+	saveField: IField
+	session: builder.Session
+}
+const launchDialog = (options: IOptions) => {
+	switch (options.saveField.Type) {
+		case 'TaxonomyField':
+			options.session.beginDialog(`${LibraryId}:${TaxonomyFieldDialogId}`, {
+				document: options.session.dialogData.document,
+				field: options.saveField,
+			})
+			break
+		case 'FieldText':
+			const args: IFieldTextArgs = {
+				document: options.session.dialogData.document,
+				field: options.saveField,
+			}
+			options.session.beginDialog(`${LibraryId}:${FieldTextDialogId}`, args)
+			break
+		default:
+			options.session.dialogData.field = null
+			const text =
+				"Sorry, I don't know how to manage that fieldtype as of yet." +
+				'Please complete this action on the website.'
+			options.session.send(text)
+			break
+	}
+}
 
 export const OnSelectField: builder.IDialogWaterfallStep[] = [
 	function validateSelection(session, results, next) {
@@ -31,33 +63,31 @@ export const OnSelectField: builder.IDialogWaterfallStep[] = [
 
 		session.dialogData.field = saveField
 
-		// Launch new dialog
-		switch (saveField.Type) {
-			case 'TaxonomyField':
-				session.beginDialog(`${LibraryId}:${TaxonomyFieldDialogId}`, { document: document })
-				break
-			case 'FieldText':
-				builder.Prompts.text(session, `Add your new ${saveField.Title}`, {
-					maxLength: saveField.TypeProperties && saveField.TypeProperties['MaxLength'],
-				})
-				break
-			default:
-				session.dialogData.field = null
-				const text =
-					"Sorry, I don't know how to manage that fieldtype as of yet." +
-					'Please complete this action on the website.'
-				session.send(text)
-				break
-		}
+		launchDialog({ saveField: saveField, session: session })
 	},
 
 	function(session, results) {
+		// remove field from missing fields
+		const editField: IField = session.dialogData.field
+		const document: IDocument = session.dialogData.document
+		const newMissingFields = document.MissingProperties.filter((missingField) => {
+			if (missingField.Id !== editField.Id) {
+				return missingField
+			}
+		})
+		session.dialogData.field = null
+		document.MissingProperties = newMissingFields
+		session.dialogData.document = document
+
 		if (results && results.response) {
-			session.send("That's correct! You are wise beyond your years...")
-		} else {
-			session.send(
-				"Sorry you couldn't figure it out. Everyone knows that the meaning of life is 42."
-			)
+			// Quit if no fields left
+			if (document.MissingProperties && document.MissingProperties.length < 1) {
+				return session.endDialogWithResult({ response: true })
+			}
 		}
+
+		// Show new dialog
+		const msg = MakeFieldMessage({ fields: document.MissingProperties, session: session })
+		session.send(msg)
 	},
 ]

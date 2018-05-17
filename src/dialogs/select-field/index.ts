@@ -14,7 +14,7 @@ export const SelectFieldDialog = (recognizer) => {
 		intentThreshold: intentThreshold,
 	})
 		.onBegin(SendSelectFieldMsg)
-		.matches(/Add ["']/gi, OnSelectField)
+		.matches(/Add field ["']/gi, OnSelectField)
 		.matchesAny([StopLuisName, CancelLuisName], StopIntent)
 		.matches(HelpLuisName, HelpIntent)
 		.onDefault(DidntUnderstand)

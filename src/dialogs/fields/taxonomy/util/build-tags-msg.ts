@@ -17,7 +17,7 @@ export const DispayTagsMsg = (options: IDisplayChoice) => {
 	const pagerSize = 4
 
 	const myPage = Pager().TakePage({
-		documents: document.AvailableTags,
+		documents: document.AvailableTags || [],
 		pageSize: pagerSize,
 		requestedPage: options.requestedViewIndex,
 	})

@@ -2,12 +2,17 @@ import * as builder from 'botbuilder'
 import { IDocument, IField, IResponse } from '../../stores'
 
 interface IOptions {
-	fields: IField[]
+	fields: IField[] | any
 	session: builder.Session
 }
-const makeFieldMessage = (options: IOptions) => {
+export const MakeFieldMessage = (options: IOptions) => {
+	options.fields.map((val, idx, arr) => {})
 	const fieldButtons = options.fields.map((field) => {
-		const button = builder.CardAction.imBack(options.session, `Add "${field.Title}"`, field.Title)
+		const button = builder.CardAction.imBack(
+			options.session,
+			`Add field "${field.Title}"`,
+			field.Title
+		)
 		return button
 	})
 
@@ -15,7 +20,14 @@ const makeFieldMessage = (options: IOptions) => {
 		.title('What field do you want to add?')
 		.buttons(fieldButtons)
 
-	const msg = new builder.Message(options.session).addAttachment(card)
+	const suggestedActions: builder.SuggestedActions = builder.SuggestedActions.create(
+		options.session,
+		[builder.CardAction.imBack(options.session, 'Quit', 'Quit')]
+	)
+
+	const msg = new builder.Message(options.session)
+		.addAttachment(card)
+		.suggestedActions(suggestedActions)
 	return msg
 }
 
@@ -26,9 +38,9 @@ export const SendSelectFieldMsg = async (session: builder.Session, args, next) =
 		return missingField.Id
 	})
 	const response: IResponse = args.response
-	const fields = response.Fields.map((field) => {
-		if (documentFieldIds.includes(field.Id)) {
-			return field
+	const includedFields = response.Fields.filter((detailedField) => {
+		if (documentFieldIds.includes(detailedField.Id)) {
+			return detailedField
 		}
 	})
 
@@ -36,7 +48,7 @@ export const SendSelectFieldMsg = async (session: builder.Session, args, next) =
 	session.dialogData.document = document
 	session.dialogData.response = response
 
-	const msg = makeFieldMessage({ fields: fields, session: session })
+	const msg = MakeFieldMessage({ fields: includedFields, session: session })
 
 	session.send(msg)
 }

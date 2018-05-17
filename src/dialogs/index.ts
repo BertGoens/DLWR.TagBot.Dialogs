@@ -1,5 +1,6 @@
 import { logSilly } from '../util'
 import { DefaultDialog, DefaultDialogId } from './default/index'
+import { FieldTextDialog, FieldTextDialogId } from './fields/fieldtext'
 import { TaxonomyFieldDialog, TaxonomyFieldDialogId } from './fields/taxonomy'
 import { SelectDocumentDialogId, SelectDocumentIntentDialog } from './select-document/index'
 import { SelectFieldDialog, SelectFieldDialogId } from './select-field'
@@ -23,4 +24,7 @@ export const applyDialogs = ({ bot, recognizer }) => {
 
 	bot.library(LibraryId).dialog(TaxonomyFieldDialogId, TaxonomyFieldDialog(recognizer))
 	logSilly(`Added: ${LibraryId}:${TaxonomyFieldDialogId}`)
+
+	bot.library(LibraryId).dialog(FieldTextDialogId, FieldTextDialog)
+	logSilly(`Added: ${LibraryId}:${FieldTextDialogId}`)
 }

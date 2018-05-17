@@ -59,4 +59,7 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 
 		session.beginDialog(`${LibraryId}:${SelectDocumentDialogId}`)
 	},
+	function(session, results) {
+		session.send('Done for today?')
+	},
 ]
