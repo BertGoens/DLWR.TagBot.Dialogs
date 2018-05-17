@@ -4,7 +4,7 @@ import { IDocument, IField } from '../../stores'
 import { FieldTextDialogId } from '../fields/fieldtext'
 import { IFieldTextArgs } from '../fields/fieldtext/steps'
 import { TaxonomyFieldDialogId } from '../fields/taxonomy'
-import { MakeFieldMessage } from './display-fields'
+import { MakeFieldMessage } from './util/make-message'
 
 interface IOptions {
 	field: IField
