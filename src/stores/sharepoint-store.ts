@@ -12,6 +12,7 @@ logInfo('SharePoint StoreUrl:', myStoreUrl)
 
 const store = axios.create({
 	baseURL: myStoreUrl,
+	timeout: 3000,
 })
 
 export interface IResponse {

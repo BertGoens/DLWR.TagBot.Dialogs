@@ -6,6 +6,7 @@ const storeUrl = process.env.LUIS_MODEL_URL
 
 const store = axios.create({
 	baseURL: storeUrl,
+	timeout: 3000,
 })
 
 interface ILuisEntity {

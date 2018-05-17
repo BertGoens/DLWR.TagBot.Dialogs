@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { logInfo, logSilly } from '../util/logger'
 import { LogHandleAxiosError } from '../util/axios-helpers'
+import { logInfo, logSilly } from '../util/logger'
 import { getStoreUrl } from '../util/store-helper'
 
 const myStoreUrl = getStoreUrl({
@@ -12,6 +12,7 @@ logInfo('Keyword StoreUrl:', myStoreUrl)
 
 const store = axios.create({
 	baseURL: myStoreUrl,
+	timeout: 3000,
 })
 
 export interface IKeywordCollection {
