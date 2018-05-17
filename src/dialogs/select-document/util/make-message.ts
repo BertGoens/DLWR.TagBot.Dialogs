@@ -2,6 +2,7 @@ import * as builder from 'botbuilder'
 import { IDocument, IResponse } from '../../../stores'
 import { logSilly } from '../../../util'
 import { Pager } from '../../../util/pager'
+import { SelectDocumentConst, SetSelectDocumentDialogData } from './dialog-data'
 
 export interface IDisplayChoice {
 	session: builder.Session
@@ -57,6 +58,12 @@ export const MakeDocumentMessage = (options: IDisplayChoice) => {
 	}
 
 	logSilly(`Page ${myPage.page}`)
-	options.session.dialogData.currentViewIndex = myPage.page
+
+	SetSelectDocumentDialogData({
+		key: SelectDocumentConst.currentViewIndex,
+		value: myPage.page,
+		session: options.session,
+	})
+
 	return msg
 }
