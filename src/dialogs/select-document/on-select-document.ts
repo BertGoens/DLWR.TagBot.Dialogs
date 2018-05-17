@@ -6,11 +6,11 @@ export const SelectDocumentsRegex: builder.IDialogWaterfallStep[] = [
 	function validateSelection(session, results, next) {
 		const numbersOnly = /\d+/
 		const selectedDocumentIndex = results.matched.input.match(numbersOnly)
-		const selectedDocument = session.userData.documents.Documents[selectedDocumentIndex[0]]
-		session.userData.selectedDocument = selectedDocument
+		const selectedDocument = session.dialogData.documents.Documents[selectedDocumentIndex[0]]
+		session.dialogData.selectedDocument = selectedDocument
 		session.beginDialog(`${LibraryId}:${SelectFieldDialogId}`, {
 			document: selectedDocument,
-			response: session.userData.documents,
+			response: session.dialogData.documents,
 		})
 	},
 	function(session, results) {

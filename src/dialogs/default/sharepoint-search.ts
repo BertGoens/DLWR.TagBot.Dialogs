@@ -2,6 +2,7 @@ import * as builder from 'botbuilder'
 import { LibraryId } from '..'
 import { GetDocuments, GetTaxonomyValues, IQueryOptions } from '../../stores'
 import { resolveDocumentAuthor, resolveDocumentFileType } from '../../util/entity-resolver'
+import { ISelectDocumentArgs } from '../select-document/display-documents'
 import { SelectDocumentDialogId } from '../select-document/index'
 
 export const SharePointSearchLuisName = 'SharePoint.Search'
@@ -24,6 +25,7 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 			),
 		}
 
+		// TODO Wrap this in a trycatch
 		const response = await GetDocuments(documentFilter)
 
 		const taxMap = {}
@@ -49,7 +51,7 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 			return session.endDialog()
 		}
 
-		session.userData.documents = response.data
+		session.dialogData.documents = response.data
 
 		session.send(
 			response.data.Documents.length +
@@ -57,7 +59,10 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 				'which document would you like to tag?'
 		)
 
-		session.beginDialog(`${LibraryId}:${SelectDocumentDialogId}`)
+		const passArgs: ISelectDocumentArgs = {
+			reponse: response.data,
+		}
+		session.beginDialog(`${LibraryId}:${SelectDocumentDialogId}`, passArgs)
 	},
 	function(session, results) {
 		if (results && results.response) {
