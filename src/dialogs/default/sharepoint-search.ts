@@ -1,6 +1,14 @@
 import * as builder from 'botbuilder'
+import * as datefns from 'date-fns'
 import { LibraryId } from '..'
-import { GetDocuments, GetTaxonomyValues, IQueryOptions } from '../../stores'
+import {
+	GetDocuments,
+	GetTaxonomyValues,
+	IQueryOptions,
+	ISettings,
+	SettingsStore,
+} from '../../stores'
+import { logError } from '../../util'
 import { resolveDocumentAuthor, resolveDocumentFileType } from '../../util/entity-resolver'
 import { ISelectDocumentArgs } from '../select-document/display-documents'
 import { SelectDocumentDialogId } from '../select-document/index'
@@ -51,8 +59,6 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 			return session.endDialog()
 		}
 
-		session.dialogData.documents = response.data
-
 		session.send(
 			response.data.Documents.length +
 				' documents found with missing requirements, ' +
@@ -64,10 +70,29 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 		}
 		session.beginDialog(`${LibraryId}:${SelectDocumentDialogId}`, passArgs)
 	},
-	function(session, results) {
-		if (results && results.response) {
-			// Delete this document from memory
+	async function(session, results) {
+		const userId = session.message.user.id
+		const channel = session.message.source
+		try {
+			const userResponse = await SettingsStore.GetSettingsById(userId, channel)
+			const newSettings: ISettings = {
+				botMutedUntill: datefns.addDays(new Date(), 1),
+				channelId: channel,
+				userId: userId,
+			}
+
+			if (
+				(userResponse &&
+					userResponse.botMutedUntill &&
+					userResponse.botMutedUntill < newSettings.botMutedUntill) ||
+				(userResponse && userResponse.botMutedUntill == null) ||
+				(userResponse && userResponse.botMutedUntill == undefined)
+			) {
+				const saveResponse = SettingsStore.SaveSettingsById(userId, newSettings)
+				session.send("I'll send you again another day if you have documents missing tags.")
+			}
+		} catch (error) {
+			logError(error.message)
 		}
-		session.send('Done for today?')
 	},
 ]
