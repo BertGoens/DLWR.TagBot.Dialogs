@@ -36,7 +36,7 @@ export interface IDocument {
 		Type: string
 		Id: string
 	}[]
-	AvailableTags: string[]
+	AvailableTags?: string[]
 }
 
 export interface IQueryOptions {

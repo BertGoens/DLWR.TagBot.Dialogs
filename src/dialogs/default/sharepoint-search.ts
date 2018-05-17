@@ -60,6 +60,9 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 		session.beginDialog(`${LibraryId}:${SelectDocumentDialogId}`)
 	},
 	function(session, results) {
+		if (results && results.response) {
+			// Delete this document from memory
+		}
 		session.send('Done for today?')
 	},
 ]

@@ -31,7 +31,7 @@ export const DispayTagsMsg = (options: IDisplayChoice) => {
 		.buttons(cardActions)
 		.subtitle(`Author: ${document.Author}`)
 		.text(
-			`Tags page: ${myPage.page + 1}/${myPage.pageTotal}` +
+			`Tags page: ${myPage.page + 1}/${myPage.pageTotal +1}` +
 				`  \nTags selected: ${(document.Tags && document.Tags.length) || 0}` +
 				`  \nChoose your fitting tags from the list:`
 		)
@@ -49,7 +49,7 @@ export const DispayTagsMsg = (options: IDisplayChoice) => {
 	if (myPage.nextPagePossible) {
 		suggestions.push(nextPageIM)
 	}
-	if (document.Tags.length > 0) {
+	if (document.Tags && document.Tags.length > 0) {
 		suggestions.push(confirmIM)
 	}
 	if (suggestions.length > 0) {

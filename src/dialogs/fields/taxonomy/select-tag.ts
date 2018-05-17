@@ -10,6 +10,10 @@ export const SelectTagRegex: builder.IDialogWaterfallStep[] = [
 
 		const document: IDocument = session.dialogData.document
 
+		if (!document.Tags) {
+			document.Tags = []
+		}
+
 		if (!document.Tags.includes(selectedTag)) {
 			document.Tags.push(selectedTag)
 			const removeIndex = document.AvailableTags.indexOf(selectedTag)

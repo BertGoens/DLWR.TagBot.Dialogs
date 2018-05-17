@@ -7,23 +7,25 @@ import { TaxonomyFieldDialogId } from '../fields/taxonomy'
 import { MakeFieldMessage } from './display-fields'
 
 interface IOptions {
-	saveField: IField
+	field: IField
+	document: IDocument
 	session: builder.Session
 }
 const launchDialog = (options: IOptions) => {
-	switch (options.saveField.Type) {
+	switch (options.field.Type) {
 		case 'TaxonomyField':
-			options.session.beginDialog(`${LibraryId}:${TaxonomyFieldDialogId}`, {
-				document: options.session.dialogData.document,
-				field: options.saveField,
-			})
+			const args1: IFieldTextArgs = {
+				document: options.document,
+				field: options.field,
+			}
+			options.session.beginDialog(`${LibraryId}:${TaxonomyFieldDialogId}`, args1)
 			break
 		case 'FieldText':
-			const args: IFieldTextArgs = {
-				document: options.session.dialogData.document,
-				field: options.saveField,
+			const args2: IFieldTextArgs = {
+				document: options.document,
+				field: options.field,
 			}
-			options.session.beginDialog(`${LibraryId}:${FieldTextDialogId}`, args)
+			options.session.beginDialog(`${LibraryId}:${FieldTextDialogId}`, args2)
 			break
 		default:
 			options.session.dialogData.field = null
@@ -63,28 +65,30 @@ export const OnSelectField: builder.IDialogWaterfallStep[] = [
 
 		session.dialogData.field = saveField
 
-		launchDialog({ saveField: saveField, session: session })
+		launchDialog({ field: saveField, document: document, session: session })
 	},
 
 	function(session, results) {
 		// remove field from missing fields
 		const editField: IField = session.dialogData.field
 		const document: IDocument = session.dialogData.document
-		const newMissingFields = document.MissingProperties.filter((missingField) => {
-			if (missingField.Id !== editField.Id) {
-				return missingField
-			}
-		})
-		session.dialogData.field = null
-		document.MissingProperties = newMissingFields
-		session.dialogData.document = document
 
 		if (results && results.response) {
+			const newMissingFields = document.MissingProperties.filter((missingField) => {
+				if (missingField.Id !== editField.Id) {
+					return missingField
+				}
+			})
+
+			document.MissingProperties = newMissingFields
+			session.dialogData.document = document
+
 			// Quit if no fields left
 			if (document.MissingProperties && document.MissingProperties.length < 1) {
 				return session.endDialogWithResult({ response: true })
 			}
 		}
+		session.dialogData.field = null
 
 		// Show new dialog
 		const msg = MakeFieldMessage({ fields: document.MissingProperties, session: session })
