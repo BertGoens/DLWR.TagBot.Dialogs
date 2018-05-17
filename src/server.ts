@@ -13,12 +13,12 @@ const argv = require('minimist')(process.argv.slice(2))
 
 import * as builder from 'botbuilder'
 import { format } from 'date-fns'
-import { join } from 'path'
 import { hostname, platform } from 'os'
+import { join } from 'path'
 import * as restify from 'restify'
-import { applyRoutes, botSubscribeEvents, logInfo, logSilly } from './util'
-import { applyDialogs, LibraryId } from './dialogs'
+import { LibraryId, applyDialogs } from './dialogs'
 import { DefaultDialogId } from './dialogs/default'
+import { applyRoutes, botSubscribeEvents, logInfo, logSilly } from './util'
 logSilly('Starting Server', format(Date.now(), 'YYYY/MM/DD-HH:mm:ss'))
 logSilly(`Server hostname: ${hostname()}, platform: ${platform()}`)
 
@@ -64,4 +64,5 @@ const defaultRecognizer = new builder.LuisRecognizer(process.env.LUIS_MODEL_URL)
 applyDialogs({ bot: bot, recognizer: defaultRecognizer })
 botSubscribeEvents(bot)
 
+// Export it for backpack (development tool for hot module reloading)
 module.exports = server
