@@ -1,17 +1,12 @@
-import * as builder from 'botbuilder'
-import * as datefns from 'date-fns'
-import { LibraryId } from '..'
-import {
-	GetDocuments,
-	GetTaxonomyValues,
-	IQueryOptions,
-	ISettings,
-	SettingsStore,
-} from '../../stores'
-import { logError } from '../../util'
-import { resolveDocumentAuthor, resolveDocumentFileType } from '../../util/entity-resolver'
-import { ISelectDocumentArgs } from '../select-document/display-documents'
-import { SelectDocumentDialogId } from '../select-document/index'
+import { AxiosResponse } from 'axios';
+import * as builder from 'botbuilder';
+import * as datefns from 'date-fns';
+import { LibraryId } from '..';
+import { GetDocuments, GetTaxonomyValues, IQueryOptions, IResponse, ISettings, SettingsStore } from '../../stores';
+import { logError } from '../../util';
+import { resolveDocumentAuthor, resolveDocumentFileType } from '../../util/entity-resolver';
+import { ISelectDocumentArgs } from '../select-document/display-documents';
+import { SelectDocumentDialogId } from '../select-document/index';
 
 export const SharePointSearchLuisName = 'SharePoint.Search'
 export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
@@ -26,6 +21,7 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 				builder.EntityRecognizer.findAllEntities(args.entities, 'document_title')
 			),
 			author: resolveDocumentAuthor(
+				// TODO Change this to User
 				builder.EntityRecognizer.findAllEntities(args.entities, 'document_author')
 			),
 			filetype: resolveDocumentFileType(
@@ -33,8 +29,14 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 			),
 		}
 
-		// TODO Wrap this in a trycatch
-		const response = await GetDocuments(documentFilter)
+		let response: AxiosResponse<IResponse> = null
+		try {
+			response = await GetDocuments(documentFilter)
+		} catch (error) {
+			logError(error.message)
+			session.send('Something went wrong when querying documents, please try again later.')
+			return session.endDialog()
+		}
 
 		const taxMap = {}
 		await response.data.Fields.map(async (field) => {
