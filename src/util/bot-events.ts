@@ -35,18 +35,21 @@ export const botSubscribeEvents = (bot: builder.UniversalBot) => {
 					// - If we wanted to send a private message to the joining user we could
 					//   delete the address.conversation field from the cloned address.
 					const address = Object.create(message.address)
-					address.user = identity
-					const name = identity.name
-					logSilly(`Message Id: ${address.id}`)
-					logSilly(`Bot     Id: ${address.bot.id}`)
-					logSilly(`User    Id: ${address.user.id}`)
-					logSilly(`Channel Id: ${address.channelId}`)
-					logSilly(`Convrs. Id: ${address.conversation && address.conversation.id}`)
-					logSilly(`Service Url: ${address.serviceUrl}`)
 
-					updateUser(identity.id, message.source)
+					const settings: ISettings = {
+						userId: address.user.id,
+						botId: address.bot.id,
+						messageId: address.id,
+						channelId: address.channelId,
+						conversationId: address.conversation && address.conversation.id,
+						serviceUrl: address.serviceUrl,
+						lastMessageSent: datefns.addDays(Date.now(), 0),
+						botMutedUntill: null,
+					}
+
+					updateUser(settings)
 						.then(() => {
-							bot.send(greetingMessage(address, name))
+							bot.send(greetingMessage(address, address.user.name))
 						})
 						.catch((err) => {
 							logError(`Error occured on conversationUpdate: ${err && err.message}`)
@@ -56,30 +59,25 @@ export const botSubscribeEvents = (bot: builder.UniversalBot) => {
 		}
 	})
 
-	const updateUser = async (userId, channelId) => {
-		logSilly(`User joined conversation: ${userId} trough ${channelId}`)
+	const updateUser = async (settings: ISettings) => {
+		logSilly(`User joined conversation: ${settings.userId} trough ${settings.channelId}`)
 
 		try {
-			let settings = await SettingsStore.GetSettingsById(userId, channelId)
-			settings.lastMessageSent = datefns.addDays(Date.now(), 0)
-			const result = await SettingsStore.SaveSettingsById(userId, settings)
+			let dbSettings = await SettingsStore.GetSettingsById(settings.userId)
+			dbSettings.lastMessageSent = datefns.addDays(Date.now(), 0)
+			const result = await SettingsStore.SaveSettingsById(dbSettings)
 			return
 		} catch (error) {
-			logSilly(`User ${userId} on ${channelId} not found, creating now.`)
+			logSilly(`User ${settings.userId} not found, creating now.`)
+			logError(error.message)
 		}
 
 		// user doesn't exist, try to create
 		try {
-			let settings: ISettings = {
-				botMutedUntill: null,
-				channelId: channelId,
-				userId: userId,
-				lastMessageSent: datefns.addDays(Date.now(), 0),
-			}
-
 			const reply = await SettingsStore.CreateSettings(settings)
 		} catch (error) {
-			logSilly(`User ${userId} on ${channelId} coudn't be created.`)
+			logSilly(`User ${settings.userId} coudn't be created.`)
+			logError(error.message)
 		}
 	}
 }

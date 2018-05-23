@@ -104,6 +104,7 @@ export async function GetTaxonomyValues(taxstoreGuid: string): Promise<AxiosResp
 	}
 }
 
+// TODO Future
 export async function SaveDocument(document: IDocument) {
 	const tagUrlArray = document.Tags.map((myTag) => {
 		return '&tags=' + encodeURIComponent(myTag)

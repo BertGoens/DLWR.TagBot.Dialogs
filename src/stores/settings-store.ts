@@ -17,12 +17,16 @@ const store = axios.create({
 
 export interface ISettings {
 	userId?: string
+	messageId?: string
+	botId?: string
 	channelId?: string
+	conversationId?: string
+	serviceUrl?: string
 	botMutedUntill?: Date
 	lastMessageSent?: Date
 }
 
-async function GetSettingsById(id: string, channel?: string): Promise<ISettings> {
+async function GetSettingsById(id: string): Promise<ISettings> {
 	const safeParams = `?id=${encodeURIComponent(id)}`
 	const url = store.defaults.baseURL + safeParams
 
@@ -36,8 +40,8 @@ async function GetSettingsById(id: string, channel?: string): Promise<ISettings>
 	}
 }
 
-async function SaveSettingsById(id: string, settings: ISettings): Promise<ISettings> {
-	const safeParams = `?id=${encodeURIComponent(id)}`
+async function SaveSettingsById(settings: ISettings): Promise<ISettings> {
+	const safeParams = `?id=${encodeURIComponent(settings.userId)}`
 	const url = store.defaults.baseURL + safeParams
 	try {
 		logSilly(url)
