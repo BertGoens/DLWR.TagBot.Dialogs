@@ -1,16 +1,22 @@
 import * as builder from 'botbuilder'
-import { SettingsStore, ISettings } from '../stores'
 import * as datefns from 'date-fns'
-import { logSilly, logError } from '.'
+import { logError, logSilly } from '.'
+import { ISettings, SettingsStore } from '../stores'
 
-export const botSubscribeEvents = (bot) => {
+const greetingMessage = (address, name) => {
+	const reply = new builder.Message()
+		.address(address)
+		.text('Hello %s. Thanks for adding me.', name || 'there')
+	return reply
+}
+
+export const botSubscribeEvents = (bot: builder.UniversalBot) => {
+	// The bot was added to or removed from a user's contact list.
+	// Passed an IContactRelationUpdate object.
 	bot.on('contactRelationUpdate', function(message) {
 		if (message.action === 'add') {
-			const name = message.user ? message.user.name : null
-			const reply = new builder.Message()
-				.address(message.address)
-				.text('Hello %s. Thanks for adding me.', name || 'there')
-			bot.send(reply)
+			const name = message.user && message.user.name
+			bot.send(greetingMessage(message.address, name))
 		}
 	})
 
@@ -30,12 +36,17 @@ export const botSubscribeEvents = (bot) => {
 					//   delete the address.conversation field from the cloned address.
 					const address = Object.create(message.address)
 					address.user = identity
+					const name = identity.name
+					logSilly(`Message Id: ${address.id}`)
+					logSilly(`Bot     Id: ${address.bot.id}`)
+					logSilly(`User    Id: ${address.user.id}`)
+					logSilly(`Channel Id: ${address.channelId}`)
+					logSilly(`Convrs. Id: ${address.conversation && address.conversation.id}`)
+					logSilly(`Service Url: ${address.serviceUrl}`)
+
 					updateUser(identity.id, message.source)
 						.then(() => {
-							const reply = new builder.Message()
-								.address(address)
-								.text('Hello %s, thanks for adding me.', identity.name || 'there')
-							bot.send(reply)
+							bot.send(greetingMessage(address, name))
 						})
 						.catch((err) => {
 							logError(`Error occured on conversationUpdate: ${err && err.message}`)

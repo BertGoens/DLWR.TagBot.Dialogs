@@ -1,8 +1,8 @@
 import * as builder from 'botbuilder'
-import { IField } from '../../../stores'
+import { IFieldFull } from '../../../stores'
 
 interface IOptions {
-	fields: IField[] | any
+	fields: IFieldFull[] | any
 	session: builder.Session
 }
 export const MakeFieldMessage = (options: IOptions) => {

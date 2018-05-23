@@ -17,13 +17,16 @@ const store = axios.create({
 
 export interface IResponse {
 	Documents: IDocument[]
-	Fields: IField[]
+	Fields: IFieldFull[]
 }
 
-export interface IField {
+export interface IFieldBasic {
 	Title: string
 	Type: string
 	Id: string
+}
+
+export interface IFieldFull extends IFieldBasic {
 	TypeProperties: {}
 }
 
@@ -32,11 +35,7 @@ export interface IDocument {
 	Tags: string[]
 	Path: string
 	Author: string
-	MissingProperties: {
-		Title: string
-		Type: string
-		Id: string
-	}[]
+	MissingProperties: IFieldBasic[]
 	AvailableTags?: string[]
 }
 

@@ -1,13 +1,13 @@
 import * as builder from 'botbuilder'
 import { LibraryId } from '..'
-import { IDocument, IField } from '../../stores'
+import { IDocument, IFieldFull } from '../../stores'
 import { FieldTextDialogId } from '../fields/fieldtext'
 import { IFieldTextArgs } from '../fields/fieldtext/steps'
 import { TaxonomyFieldDialogId } from '../fields/taxonomy'
 import { MakeFieldMessage } from './util/make-message'
 
 interface IOptions {
-	field: IField
+	field: IFieldFull
 	document: IDocument
 	session: builder.Session
 }
@@ -45,7 +45,7 @@ export const OnSelectField: builder.IDialogWaterfallStep[] = [
 
 		// get field properties
 		const document: IDocument = session.dialogData.document
-		const fields: IField[] = session.dialogData.response.Fields
+		const fields: IFieldFull[] = session.dialogData.response.Fields
 
 		let fieldId
 		for (const mprop of document.MissingProperties) {
@@ -55,7 +55,7 @@ export const OnSelectField: builder.IDialogWaterfallStep[] = [
 			}
 		}
 
-		let saveField: IField
+		let saveField: IFieldFull
 		for (const cField of fields) {
 			if (cField.Id === fieldId) {
 				saveField = cField
@@ -70,7 +70,7 @@ export const OnSelectField: builder.IDialogWaterfallStep[] = [
 
 	function(session, results) {
 		// remove field from missing fields
-		const editField: IField = session.dialogData.field
+		const editField: IFieldFull = session.dialogData.field
 		const document: IDocument = session.dialogData.document
 
 		if (results && results.response) {

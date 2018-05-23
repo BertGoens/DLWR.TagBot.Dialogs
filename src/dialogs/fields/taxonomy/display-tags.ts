@@ -1,12 +1,12 @@
 import * as builder from 'botbuilder'
 import { KeywordStore } from '../../../stores/keyword-store'
-import { GetTaxonomyValues, IDocument, IField } from '../../../stores/sharepoint-store'
+import { GetTaxonomyValues, IDocument, IFieldFull } from '../../../stores/sharepoint-store'
 import { logError, logSilly } from '../../../util/logger'
 import { DispayTagsMsg, IDisplayChoice } from './util/build-tags-msg'
 
 export interface ITaxonomyDialogArgs {
 	document: IDocument
-	field: IField
+	field: IFieldFull
 }
 
 export const DisplayTags = async (session: builder.Session, args: ITaxonomyDialogArgs, next) => {

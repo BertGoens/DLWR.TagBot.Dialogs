@@ -1,9 +1,9 @@
 import * as builder from 'botbuilder'
-import { IDocument, IField } from '../../../stores/sharepoint-store'
+import { IDocument, IFieldFull } from '../../../stores/sharepoint-store'
 
 export interface IFieldTextArgs {
 	document: IDocument
-	field: IField
+	field: IFieldFull
 }
 
 export const FieldTextSteps: builder.IDialogWaterfallStep[] = [
