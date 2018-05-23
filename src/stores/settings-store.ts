@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 import { LogHandleAxiosError } from '../util/axios-helpers'
 import { logInfo, logSilly } from '../util/logger'
 import { getStoreUrl } from '../util/store-helper'
@@ -12,7 +12,7 @@ logInfo('Settings StoreUrl:', myStoreUrl)
 
 const store = axios.create({
 	baseURL: myStoreUrl,
-	timeout: 3000,
+	timeout: 5000,
 })
 
 export interface ISettings {
@@ -26,7 +26,7 @@ export interface ISettings {
 	lastMessageSent?: Date
 }
 
-async function GetSettingsById(id: string): Promise<ISettings> {
+async function GetSettingsById(id: string): Promise<AxiosResponse<ISettings>> {
 	const safeParams = `?id=${encodeURIComponent(id)}`
 	const url = store.defaults.baseURL + safeParams
 
@@ -34,32 +34,32 @@ async function GetSettingsById(id: string): Promise<ISettings> {
 		logSilly(url)
 		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
-		return result.data
+		return result
 	} catch (error) {
 		LogHandleAxiosError({ error: error, url: url })
 	}
 }
 
-async function SaveSettingsById(settings: ISettings): Promise<ISettings> {
+async function SaveSettingsById(settings: ISettings): Promise<AxiosResponse<ISettings>> {
 	const safeParams = `?id=${encodeURIComponent(settings.userId)}`
 	const url = store.defaults.baseURL + safeParams
 	try {
 		logSilly(url)
 		const result = await store.put(safeParams, settings)
 		logInfo(result.config.method, result.status, result.config.url)
-		return result.data
+		return result
 	} catch (error) {
 		LogHandleAxiosError({ error: error, url: url })
 	}
 }
 
-async function CreateSettings(settings: ISettings): Promise<ISettings> {
+async function CreateSettings(settings: ISettings): Promise<AxiosResponse<ISettings>> {
 	const safeParams = ''
 	const url = store.defaults.baseURL + safeParams
 	try {
 		const result = await store.post(safeParams, settings)
 		logInfo(result.config.method, result.status, result.config.url)
-		return result.data
+		return result
 	} catch (error) {
 		LogHandleAxiosError({ error: error, url: url })
 	}

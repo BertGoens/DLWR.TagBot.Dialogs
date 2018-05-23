@@ -63,10 +63,22 @@ export const botSubscribeEvents = (bot: builder.UniversalBot) => {
 		logSilly(`User joined conversation: ${settings.userId} trough ${settings.channelId}`)
 
 		try {
-			let dbSettings = await SettingsStore.GetSettingsById(settings.userId)
-			dbSettings.lastMessageSent = datefns.addDays(Date.now(), 0)
-			const result = await SettingsStore.SaveSettingsById(dbSettings)
-			return
+			let response = await SettingsStore.GetSettingsById(settings.userId)
+			if (response && response.data) {
+				// User Found, update
+				const newSettings: ISettings = {
+					botId: settings.botId,
+					channelId: settings.channelId,
+					conversationId: settings.conversationId,
+					messageId: settings.messageId,
+					userId: settings.userId,
+					serviceUrl: settings.serviceUrl,
+					lastMessageSent: settings.lastMessageSent,
+					botMutedUntill: response.data.botMutedUntill, // keep this
+				}
+				const result = await SettingsStore.SaveSettingsById(newSettings)
+				return
+			}
 		} catch (error) {
 			logSilly(`User ${settings.userId} not found, creating now.`)
 			logError(error.message)
