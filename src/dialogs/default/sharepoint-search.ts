@@ -2,14 +2,7 @@ import { AxiosResponse } from 'axios'
 import * as builder from 'botbuilder'
 import * as datefns from 'date-fns'
 import { LibraryId } from '..'
-import {
-	GetDocuments,
-	GetTaxonomyValues,
-	IQueryOptions,
-	IResponse,
-	ISettings,
-	SettingsStore,
-} from '../../stores'
+import { GetDocuments, IQueryOptions, IResponse, ISettings, SettingsStore } from '../../stores'
 import { logError } from '../../util'
 import { resolveDocumentAuthor, resolveDocumentFileType } from '../../util/entity-resolver'
 import { ISelectDocumentArgs } from '../select-document/display-documents'
@@ -44,18 +37,6 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 			session.send('Something went wrong when querying documents, please try again later.')
 			return session.endDialog()
 		}
-
-		const taxMap = {}
-		await response.data.Fields.map(async (field) => {
-			if (field.Type === 'TaxonomyField') {
-				const taxId = field.TypeProperties['TermsetId']
-				if (!taxMap[taxId]) {
-					const values = await GetTaxonomyValues(taxId)
-					taxMap[taxId] = values
-				}
-				field.TypeProperties['Values'] = taxMap[taxId]
-			}
-		})
 
 		// end conversation when nothing untagged
 		if ((!response && !response.data) || response.data.Documents.length === 0) {
