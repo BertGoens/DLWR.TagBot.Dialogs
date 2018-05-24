@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from 'axios';
-import { LogHandleAxiosError } from '../util/axios-helpers';
-import { logInfo, logSilly } from '../util/logger';
-import { getStoreUrl } from '../util/store-helper';
+import axios, { AxiosResponse } from 'axios'
+import { LogHandleAxiosError } from '../util/axios-helpers'
+import { logInfo, logSilly } from '../util/logger'
+import { getStoreUrl } from '../util/store-helper'
 
 const myStoreUrl = getStoreUrl({
 	devStore: process.env.SHAREPOINT_LOCAL_STORE,
@@ -77,13 +77,9 @@ export async function GetDocuments(q: IQueryOptions): Promise<AxiosResponse<IRes
 	const url = store.defaults.baseURL + safeParams
 
 	try {
-		// TODO HACK REMOVE ME
-		store.defaults.baseURL = 'http://172.20.10.5:8080/speedhack'
 		logSilly(url)
 		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
-		// TODO HACK REMOVE ME
-		store.defaults.baseURL = 'http://172.20.10.5/api/SharePoint'
 		return result
 	} catch (error) {
 		LogHandleAxiosError({ error: error, url: url })
@@ -104,7 +100,7 @@ export async function GetTaxonomyValues(taxstoreGuid: string): Promise<AxiosResp
 	}
 }
 
-// TODO Future
+// TODO Future: improve saving for all fields
 export async function SaveDocument(document: IDocument) {
 	const tagUrlArray = document.Tags.map((myTag) => {
 		return '&tags=' + encodeURIComponent(myTag)
