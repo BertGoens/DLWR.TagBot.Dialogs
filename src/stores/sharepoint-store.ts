@@ -1,7 +1,7 @@
-import axios, { AxiosResponse } from 'axios'
-import { LogHandleAxiosError } from '../util/axios-helpers'
-import { logInfo, logSilly } from '../util/logger'
-import { getStoreUrl } from '../util/store-helper'
+import axios, { AxiosResponse } from 'axios';
+import { LogHandleAxiosError } from '../util/axios-helpers';
+import { logInfo, logSilly } from '../util/logger';
+import { getStoreUrl } from '../util/store-helper';
 
 const myStoreUrl = getStoreUrl({
 	devStore: process.env.SHAREPOINT_LOCAL_STORE,
@@ -78,12 +78,12 @@ export async function GetDocuments(q: IQueryOptions): Promise<AxiosResponse<IRes
 
 	try {
 		// TODO HACK REMOVE ME
-		store.defaults.baseURL = 'http://192.168.0.107:8080/speedhack'
+		store.defaults.baseURL = 'http://172.20.10.5:8080/speedhack'
 		logSilly(url)
 		const result = await store.get(safeParams)
 		logInfo(result.config.method, result.status, result.config.url)
 		// TODO HACK REMOVE ME
-		store.defaults.baseURL = 'http://192.168.0.107/api/SharePoint'
+		store.defaults.baseURL = 'http://172.20.10.5/api/SharePoint'
 		return result
 	} catch (error) {
 		LogHandleAxiosError({ error: error, url: url })

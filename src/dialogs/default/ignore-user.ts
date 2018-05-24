@@ -1,6 +1,6 @@
 import * as builder from 'botbuilder'
 import * as datefns from 'date-fns'
-import { SettingsStore, ISettings } from '../../stores'
+import { ISettings, SettingsStore } from '../../stores'
 import { resolveDateV2 } from '../../util/entity-resolver'
 
 export const IgnoreUserDialog: builder.IDialogWaterfallStep[] = [
@@ -26,14 +26,14 @@ export const IgnoreUserDialog: builder.IDialogWaterfallStep[] = [
 		const userId = session.message.user.id
 		const channel = session.message.source
 		try {
-			const userResponse = await SettingsStore.GetSettingsById(userId, channel)
+			const userResponse = await SettingsStore.GetSettingsById(userId)
 			const newSettings: ISettings = {
 				botMutedUntill: ignoreUntill,
 				channelId: channel,
 				userId: userId,
 			}
 
-			const saveResponse = SettingsStore.SaveSettingsById(userId, newSettings)
+			const saveResponse = SettingsStore.SaveSettingsById(newSettings)
 			session.send(message)
 		} catch (error) {
 			session.send('Something went wrong, please try again later.')

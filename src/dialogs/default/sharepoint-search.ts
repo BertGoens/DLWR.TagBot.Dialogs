@@ -1,12 +1,19 @@
-import { AxiosResponse } from 'axios';
-import * as builder from 'botbuilder';
-import * as datefns from 'date-fns';
-import { LibraryId } from '..';
-import { GetDocuments, GetTaxonomyValues, IQueryOptions, IResponse, ISettings, SettingsStore } from '../../stores';
-import { logError } from '../../util';
-import { resolveDocumentAuthor, resolveDocumentFileType } from '../../util/entity-resolver';
-import { ISelectDocumentArgs } from '../select-document/display-documents';
-import { SelectDocumentDialogId } from '../select-document/index';
+import { AxiosResponse } from 'axios'
+import * as builder from 'botbuilder'
+import * as datefns from 'date-fns'
+import { LibraryId } from '..'
+import {
+	GetDocuments,
+	GetTaxonomyValues,
+	IQueryOptions,
+	IResponse,
+	ISettings,
+	SettingsStore,
+} from '../../stores'
+import { logError } from '../../util'
+import { resolveDocumentAuthor, resolveDocumentFileType } from '../../util/entity-resolver'
+import { ISelectDocumentArgs } from '../select-document/display-documents'
+import { SelectDocumentDialogId } from '../select-document/index'
 
 export const SharePointSearchLuisName = 'SharePoint.Search'
 export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
@@ -76,7 +83,7 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 		const userId = session.message.user.id
 		const channel = session.message.source
 		try {
-			const userResponse = await SettingsStore.GetSettingsById(userId, channel)
+			const userResponse = await SettingsStore.GetSettingsById(userId)
 			const newSettings: ISettings = {
 				botMutedUntill: datefns.addDays(new Date(), 1),
 				channelId: channel,
@@ -85,12 +92,13 @@ export const SharePointSearchDialog: builder.IDialogWaterfallStep[] = [
 
 			if (
 				(userResponse &&
-					userResponse.botMutedUntill &&
-					userResponse.botMutedUntill < newSettings.botMutedUntill) ||
-				(userResponse && userResponse.botMutedUntill == null) ||
-				(userResponse && userResponse.botMutedUntill == undefined)
+					userResponse.data &&
+					userResponse.data.botMutedUntill &&
+					userResponse.data.botMutedUntill < newSettings.botMutedUntill) ||
+				(userResponse && userResponse.data.botMutedUntill == null) ||
+				(userResponse && userResponse.data.botMutedUntill == undefined)
 			) {
-				const saveResponse = SettingsStore.SaveSettingsById(userId, newSettings)
+				const saveResponse = SettingsStore.SaveSettingsById(newSettings)
 				session.send("I'll send you again another day if you have documents missing tags.")
 			}
 		} catch (error) {

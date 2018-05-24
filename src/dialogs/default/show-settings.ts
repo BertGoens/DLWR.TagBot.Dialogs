@@ -1,7 +1,7 @@
 import * as builder from 'botbuilder'
-import { SettingsStore, ISettings } from '../../stores'
-import { logError, logDebug } from '../../util'
 import { debuglog } from 'util'
+import { ISettings, SettingsStore } from '../../stores'
+import { logDebug } from '../../util'
 
 export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
 	async function settingsLookup(session, args, next) {
@@ -13,7 +13,8 @@ export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
 		// retrieve the settings by id
 		let createSettings = false
 		try {
-			userSettings = await SettingsStore.GetSettingsById(userId, channelId)
+			const response = await SettingsStore.GetSettingsById(userId)
+			userSettings = response.data
 		} catch (error) {
 			createSettings = true
 		}
@@ -21,10 +22,11 @@ export const ShowSettingsDialog: builder.IDialogWaterfallStep[] = [
 		if (createSettings) {
 			debuglog('Create settings')
 			try {
-				userSettings = await SettingsStore.CreateSettings({
+				const response = await SettingsStore.CreateSettings({
 					userId: userId,
 					channelId: channelId,
 				})
+				userSettings = response.data
 			} catch (error) {
 				logDebug('CreateSettings catch')
 			}
