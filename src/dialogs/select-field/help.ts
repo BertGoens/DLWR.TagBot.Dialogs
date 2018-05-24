@@ -6,7 +6,7 @@ export const HelpIntent: builder.IDialogWaterfallStep[] = [
 			.text(`Select a missing field by clicking the "Select" button.`)
 			.suggestedActions(
 				builder.SuggestedActions.create(session, [
-					builder.CardAction.imBack(session, 'Quit', 'Quit'),
+					builder.CardAction.imBack(session, 'Return', 'Select another document'),
 				])
 			)
 		session.send(message)
